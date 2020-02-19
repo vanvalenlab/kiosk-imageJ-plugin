@@ -3,6 +3,8 @@ package actualPlugin;
 // Exceptions
 import java.io.IOException;
 
+import javax.swing.JFrame;
+
 // Data Structures
 import java.io.BufferedReader;
 import java.lang.String;
@@ -31,6 +33,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.HttpURLConnection;
+
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.HttpEntity;
 
@@ -84,6 +88,27 @@ public class App
         return n;
     }
 
+    
+    // JOptionPane.showInputDialog("Please input a value");
+    public int minutesForJob() {
+    	int selected = -1;
+    	String defaultSec = "60";
+    	while (selected == -1) {
+    		JFrame newFrame = new JFrame();
+    		try {
+    			
+    		 selected = Integer.parseInt( JOptionPane.showInputDialog(newFrame,
+    			        "How long in minutes are you willing to wait for?",
+    			        defaultSec));
+    		 return selected;
+    		}
+    		catch (NumberFormatException e) {
+    			JOptionPane.showMessageDialog(null, "You did not input a number. Please input a number.");
+    		}
+    		 //JOptionPane.showInputDialog("Please input a value");
+    	}
+		return selected;
+    }
     
     // Category: File manipulation
     /**
@@ -224,9 +249,6 @@ public class App
 	        // We wish to make post and get requests!
 	        conn.setDoInput(true);
 	        conn.setDoOutput(true);
-	        // Keep the connection alive.
-	        conn.setRequestProperty("Connection", "Keep-Alive");
-	        conn.addRequestProperty("Accept-Charset", "UTF-8");
 	        return conn;
     	}
     	catch(IOException e) {
@@ -278,29 +300,16 @@ public class App
         	// Open a connection with the site.
     		HttpURLConnection newConn = setupConn(url, reqType);
     		if (newConn != null) {
-	    		//URL requestURL = new URL(url);
-		        //HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
-		        // Set timeouts for reading and connection
-		        //conn.setReadTimeout(10000);
-		        //conn.setConnectTimeout(15000);
-		        // We want to make a post request!
-		       // conn.setRequestMethod("POST");
-		        // We wish to make post and get requests!
-		        //conn.setDoInput(true);
-		        //conn.setDoOutput(true);
     			
 		        // Use the file for selection
 		        HttpEntity reqEntity = MultipartEntityBuilder.create()
 		                    .addBinaryBody("file", new File(file))
 		                    .build();
-		        // Keep the connection alive.
-		        //conn.setRequestProperty("Connection", "Keep-Alive");
-		        
+		        		        
 		        // Apparently we need this to set the length of content,
 		        // and specify type of content.
 		        newConn.addRequestProperty("Content-length", Objects.toString(reqEntity.getContentLength()));
 		        newConn.addRequestProperty(reqEntity.getContentType().getName(), reqEntity.getContentType().getValue());
-		        //conn.addRequestProperty("Accept-Charset", "UTF-8");
 		        // Write in the file to be sent
 		        OutputStream os = newConn.getOutputStream();
 		        reqEntity.writeTo(newConn.getOutputStream());
@@ -312,13 +321,6 @@ public class App
 		            String json_response = retrieveJSON(newConn);
 		            // Generate the response, containing the imageURL and new name of the uploaded
 		            // file.
-		            /*InputStreamReader response = new InputStreamReader(conn.getInputStream());
-		            BufferedReader br = new BufferedReader(response);
-		            String text = "";
-		            while ((text = br.readLine()) != null) {
-		              json_response += text;
-		            }
-		            System.out.println(json_response);*/
 		            newConn.disconnect();
 		            return json_response;
 		        }
@@ -344,31 +346,12 @@ public class App
         	String url = "http://deepcell.org/api/jobtypes";
         	String reqType = "GET";
         	// Open a connection with the main site.
-	        //URL requestURL = new URL(url);
-	        HttpURLConnection conn = setupConn(url, reqType);;
-	        // Set timeouts for reading and connection
-	        /*conn.setReadTimeout(10000);
-	        conn.setConnectTimeout(15000);
-	        // We want to make a get request!
-	        conn.setRequestMethod("GET");
-	        conn.setDoInput(true);
-	        conn.setDoOutput(true);*/
-	        // Keep the connection alive.
-	        /*conn.setRequestProperty("Connection", "Keep-Alive");
-	        conn.addRequestProperty("Accept-Charset", "UTF-8");*/
+	        HttpURLConnection conn = setupConn(url, reqType);
 	        conn.connect();	
 	        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	            System.out.println(conn.getResponseMessage());
 	            // Generate the response, containing the list of all job types.
 	            String json_response = retrieveJSON(conn);
-	            /*InputStreamReader response = new InputStreamReader(conn.getInputStream());
-	            BufferedReader br = new BufferedReader(response);
-	            String text = "";
-	            while ((text = br.readLine()) != null) {
-	              json_response += text;
-	            }
-	            
-	            System.out.println(json_response);*/
 	            conn.disconnect();
 	            return json_response;
 	        }
@@ -399,21 +382,10 @@ public class App
     	String url = "http://deepcell.org/api/predict";
     	String reqType = "POST";
     	// Open a connection with the main site.
-	    //URL requestURL = new URL(url);
 	    HttpURLConnection conn = setupConn(url, reqType);
-	    // Set timeouts for reading and connection
-	    /*conn.setReadTimeout(10000);
-	    conn.setConnectTimeout(15000);
-	    // We want to make a post request!
-	    conn.setRequestMethod("POST");
-	    //conn.setUseCaches(false);
-	    // We wish to make post and get requests!
-	    conn.setDoInput(true);
-	    conn.setDoOutput(true);
-	    // Keep the connection alive.
-	    conn.setRequestProperty("Connection", "Keep-Alive");
-	    conn.addRequestProperty("Accept-Charset", "UTF-8");*/
 	    
+	    conn.setRequestProperty( "Content-Type", "application/json" );
+        conn.setRequestProperty("Accept", "application/json");
 	    // Write the message with information about the image
 	    // and specified job type.
 	    OutputStream os = conn.getOutputStream();
@@ -427,14 +399,6 @@ public class App
 	        System.out.println(conn.getResponseMessage());
 	        // Write the JSON response, which is the redisHash.
 	        String json_response = retrieveJSON(conn);
-	        /*InputStreamReader response = new InputStreamReader(conn.getInputStream());
-	        BufferedReader br = new BufferedReader(response);
-	        String text = "";
-	        while ((text = br.readLine()) != null) {
-	          json_response += text;
-	        }
-	        
-	        System.out.println(json_response);*/
 	        conn.disconnect();
 	        return json_response;
 	    }
@@ -465,57 +429,28 @@ public class App
         	String url = "http://deepcell.org/api/status";
         	String reqType = "POST";
         	// Open a connection with the main site.
-	        //URL requestURL = new URL(url);
 	        HttpURLConnection conn = setupConn(url, reqType);
-	        // Set timeouts for reading and connection
-	        /*conn.setReadTimeout(10000);
-	        conn.setConnectTimeout(15000);
-	        // We want to make a post request!
-	        conn.setRequestMethod("POST");
-	        //conn.setUseCaches(false);
-	        // We wish to make post and get requests!
-	        conn.setDoInput(true);
-	        conn.setDoOutput(true);
-	        // Use the file for selection
-	        //HttpEntity reqEntity = MultipartEntityBuilder.create()
-	        //            .addBinaryBody("file", new File(file))
-	        //            .build();
-	        // Keep the connection alive.
-	        conn.setRequestProperty("Connection", "Keep-Alive");
-	        conn.addRequestProperty("Accept-Charset", "UTF-8");*/
-	        // Apparently we need this to set the length of content,
-	        // and specify type of content.
-	        //conn.addRequestProperty("Content-length", Objects.toString(reqEntity.getContentLength()));
-	        //conn.addRequestProperty(reqEntity.getContentType().getName(), reqEntity.getContentType().getValue());
-	        
 	        // Write the message we want, namely the redis hash
 	        // we want to query the status of.
+	        conn.setRequestProperty( "Content-Type", "application/json" );
+	        conn.setRequestProperty("Accept", "application/json");
 	        OutputStream os = conn.getOutputStream();
-	        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
-	        System.out.println(hash);
-	        osw.write(hash);
-	        //OutputStream os = conn.getOutputStream();
-	        //reqEntity.writeTo(conn.getOutputStream());
-	        osw.flush();
+	        
+	        
+	        byte[] input = hash.getBytes("utf-8");
+	        os.write(input, 0, input.length);
 	        os.close();
-	
-	        //OutputStream os = conn.getOutputStream();
-	        //reqEntity.writeTo(conn.getOutputStream());
+	           
+	        System.out.println(hash.getClass());
+	        
 	        
 	        conn.connect();
 	
 	        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	            System.out.println(conn.getResponseMessage());
-	            //InputStream response = conn.getInputStream();
-	            String json_response = retrieveJSON(conn);
-	            /*InputStreamReader response = new InputStreamReader(conn.getInputStream());
-	            BufferedReader br = new BufferedReader(response);
-	            String text = "";
-	            while ((text = br.readLine()) != null) {
-	              json_response += text;
-	            }
 	            
-	            System.out.println(json_response);*/
+	            String json_response = retrieveJSON(conn);
+	            
 	            conn.disconnect();
 	            return json_response;
 	        }
@@ -544,54 +479,27 @@ public class App
      */
     public String expireHash(String expireHash) {
     	try {
-    	String url = "http://deepcell.org/api/predict";
+    	String url = "http://deepcell.org/api/redis/expire";
     	String reqType = "POST";
     	// Open a connection with the main site.
-	    //URL requestURL = new URL(url);
 	    HttpURLConnection conn = setupConn(url, reqType);
-	    // Set timeouts for reading and connection
-	    /*conn.setReadTimeout(10000);
-	    conn.setConnectTimeout(15000);
-	    // We want to make a post request!
-	    conn.setRequestMethod("POST");
-	    //conn.setUseCaches(false);
-	    // We wish to make post and get requests!
-	    conn.setDoInput(true);
-	    conn.setDoOutput(true);
-	    // Use the file for selection
-	    //HttpEntity reqEntity = MultipartEntityBuilder.create()
-	    //            .addBinaryBody("file", new File(file))
-	    //            .build();
-	    // Keep the connection alive.
-	    conn.setRequestProperty("Connection", "Keep-Alive");
-	    conn.addRequestProperty("Accept-Charset", "UTF-8");*/
-	    // Apparently we need this to set the length of content,
-	    // and specify type of content.
-	    //conn.addRequestProperty("Content-length", Objects.toString(reqEntity.getContentLength()));
-	    //conn.addRequestProperty(reqEntity.getContentType().getName(), reqEntity.getContentType().getValue());
+	    conn.setRequestProperty( "Content-Type", "application/json" );
+        conn.setRequestProperty("Accept", "application/json");
 	    // Write the message
 	    OutputStream os = conn.getOutputStream();
 	    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
 	    System.out.println(expireHash);
 	    osw.write(expireHash);
-	    //OutputStream os = conn.getOutputStream();
-	    //reqEntity.writeTo(conn.getOutputStream());
+	    
 	    osw.flush();
 	    os.close();
 	    conn.connect();
 	
 	    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	        System.out.println(conn.getResponseMessage());
-	        //InputStream response = conn.getInputStream();
-	        String json_response = retrieveJSON(conn);
-	        /*InputStreamReader response = new InputStreamReader(conn.getInputStream());
-	        BufferedReader br = new BufferedReader(response);
-	        String text = "";
-	        while ((text = br.readLine()) != null) {
-	          json_response += text;
-	        }
 	        
-	        System.out.println(json_response);*/
+	        String json_response = retrieveJSON(conn);
+	        
 	        conn.disconnect();
 	        return json_response;
 	        
@@ -684,7 +592,6 @@ public class App
             	// Process imageData and set it up for the 
             	// next request, predict.
             	Response response = g.fromJson(imageData, Response.class);
-                //String p = g.toJson(imageData);
                 System.out.println(response.getuploadedName());
                                 
                 // Query available job types
@@ -701,17 +608,56 @@ public class App
                 
                 // Send next API request, predict, to add image
                 // to job queue.
-                //String newRes = "{"hash":5}";//newApp.predictFile(theImage);
-                String newRes = g.toJson(new Hash("5"));
+                String newRes = newApp.predictFile(theImage.toString());
             	if (newRes != null) {
             		System.out.println("Yay!");
+            		
+            		// Add/query expiration
+            		// Add user preference for minutes - done?
+            		int minutes = newApp.minutesForJob();
+            		int secs = minutes * 60;
             		Hash hashKey = g.fromJson(newRes, Hash.class);
+            		ExpireHash newExp = new ExpireHash(hashKey.hash, secs);
+            		String expHash = g.toJson(newExp);
+            		String setExp = newApp.expireHash(expHash);
+            		
             		// Query status: we don't need hash class here, because we're reusing
             		String status = newApp.getStatus(newRes);
-            		System.out.println(status);
-            		// Add/query expiration
-            		ExpireHash newExp = new ExpireHash(hashKey.hash, 480);
-            		String expHash = g.toJson(newExp);
+            		Status theStatus = g.fromJson(status, Status.class);
+            		
+            		String prevStatus = theStatus.status;
+            		String updatedStatus = prevStatus;
+            		System.out.println(updatedStatus);
+            		while ((updatedStatus != "expired") && (updatedStatus != "finished") && (updatedStatus != "failed")) {
+            			System.out.println(updatedStatus);
+            			while (updatedStatus == prevStatus) {
+            				try {
+								Thread.sleep(60000);
+								// Query status: we don't need hash class here, because we're reusing
+			            		status = newApp.getStatus(newRes);
+			            		theStatus = g.fromJson(status, Status.class);
+			            		updatedStatus = theStatus.status;
+			            		if (updatedStatus != prevStatus) {
+			            			System.out.println(updatedStatus);
+			            		}
+								
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								 e.printStackTrace();
+							}
+            			}
+            			prevStatus = updatedStatus;
+            		
+            		// TODO:            		
+            		// Test all
+            		// fetch output url
+            		
+            		// Next release
+            		// a few jobs at once, async http request, keep sending the request
+            		// stretch goal, select multiple file
+            		// take at least one file, do multiple jobs
+            		
+            		}
             		
             	}
             	else {
