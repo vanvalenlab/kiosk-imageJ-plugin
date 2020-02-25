@@ -521,6 +521,51 @@ public class App
 	return null;
 
     }
+    
+    public String getRedis(String hash) {
+    	try {
+    	String url = "http://deepcell.org/api/redis/expire";
+    	String reqType = "POST";
+    	// Open a connection with the main site.
+	    HttpURLConnection conn = setupConn(url, reqType);
+	    conn.setRequestProperty( "Content-Type", "application/json" );
+        conn.setRequestProperty("Accept", "application/json");
+	    // Write the message
+	    OutputStream os = conn.getOutputStream();
+	    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
+	    System.out.println(hash);
+	    osw.write(hash);
+	    
+	    osw.flush();
+	    os.close();
+	    conn.connect();
+	
+	    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+	        System.out.println(conn.getResponseMessage());
+	        
+	        String json_response = retrieveJSON(conn);
+	        
+	        conn.disconnect();
+	        return json_response;
+	        
+	 
+	        
+	    }
+	    else {
+	    	System.out.println(conn.getResponseMessage());
+	    	System.out.println(conn.getResponseCode());
+	        conn.disconnect();
+	    	}
+    }
+    catch (IOException ex) {
+    	System.out.println("A problem was encountered");
+        System.err.println(ex);
+        return null;
+    }
+    
+	return null;
+
+    }
 
  
     
@@ -585,7 +630,7 @@ public class App
             File uploadFile1 = new File(file);
             String imageData = newApp.uploadFile(file);
             
-            
+            // Two issues
             if (imageData != null) {
             	Gson g = new Gson();
             	
@@ -627,10 +672,14 @@ public class App
             		
             		String prevStatus = theStatus.status;
             		String updatedStatus = prevStatus;
+            		System.out.println("Hello again");
             		System.out.println(updatedStatus);
-            		while ((updatedStatus != "expired") && (updatedStatus != "finished") && (updatedStatus != "failed")) {
+            		while ((updatedStatus.compareTo("expired") != 0) && (updatedStatus.compareTo("failed") != 0) && (updatedStatus.compareTo("done") != 0)) {
             			System.out.println(updatedStatus);
-            			while (updatedStatus == prevStatus) {
+            			while (updatedStatus.compareTo(prevStatus) == 0) {
+            				System.out.println("Has the status updated?");
+            				System.out.println(updatedStatus == prevStatus);
+            				
             				try {
 								Thread.sleep(60000);
 								// Query status: we don't need hash class here, because we're reusing
@@ -638,6 +687,7 @@ public class App
 			            		theStatus = g.fromJson(status, Status.class);
 			            		updatedStatus = theStatus.status;
 			            		if (updatedStatus != prevStatus) {
+			            			System.out.println("Status changed!");
 			            			System.out.println(updatedStatus);
 			            		}
 								
@@ -646,11 +696,14 @@ public class App
 								 e.printStackTrace();
 							}
             			}
+            			System.out.println("Reached here");
             			prevStatus = updatedStatus;
             		
             		// TODO:            		
             		// Test all
-            		// fetch output url
+            		// fetch output url??? How does this work? Don't see this
+            	    // in status code
+            		// It fails usually, but sometimes, it says started....is something wrong?
             		
             		// Next release
             		// a few jobs at once, async http request, keep sending the request
@@ -658,13 +711,27 @@ public class App
             		// take at least one file, do multiple jobs
             		
             		}
-            		
+            		// 1. What are all the possible statuses?
+            		// 2. WHy isn't this working? Esp the download url
+            		// I think this is all I need for completion
+            		// use api/redis
+            		if (updatedStatus.compareTo("failed") == 0) {
+            			System.out.println("FAILURE!!!");
+            			System.out.println(newApp.getRedis(newRes));
+            		}
+            		// use api/redis?
+            		if (updatedStatus.compareTo("done") == 0) {
+            			System.out.println("DONE!!!");
+            			System.out.println(newApp.getRedis(newRes));
+            		}
             	}
             	else {
             		System.out.println("No!");
             	}
             }
         }
+        
+        System.out.println("End of program");
 
     }
 }
