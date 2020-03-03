@@ -1,5 +1,8 @@
 package actualPlugin;
 
+// ExpireHash is used to send
+// an API request to set an
+// expiration time.
 public class ExpireHash {
 	String hash;
 	int expireIn;
