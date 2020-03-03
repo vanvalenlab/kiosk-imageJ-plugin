@@ -42,6 +42,16 @@ import org.apache.http.HttpEntity;
 /**
  * So far, App lets you select a file type,
  * and it zips directories if selected.
+ * // TODO:
+ * // Next release
+ * // a few jobs at once, async http request, keep sending the request
+ * // stretch goal, select multiple file
+ * // take at least one file, do multiple jobs
+ * }
+ * // 1. What are all the possible statuses?
+ * // 2. WHy isn't this working? Esp the download url
+ * // I think this is all I need for completion
+ * // use api/redis
  *
  */
 public class App 
@@ -88,14 +98,18 @@ public class App
     }
 
     
-    // JOptionPane.showInputDialog("Please input a value");
+    /** minutesForJob() helps you enter how many minutes you are
+     * willing to wait for a job.
+     * @param None
+     * @return selected, a value that has been entered and parsed as
+     * an integer.
+     */
     public int minutesForJob() {
     	int selected = -1;
     	String defaultSec = "60";
     	while (selected == -1) {
     		JFrame newFrame = new JFrame();
-    		try {
-    			
+    		try {   			
     		 selected = Integer.parseInt( JOptionPane.showInputDialog(newFrame,
     			        "How long in minutes are you willing to wait for?",
     			        defaultSec));
@@ -105,7 +119,6 @@ public class App
     			JOptionPane.showMessageDialog(null, "You did not input a number. Please "
     					+ "input a number.");
     		}
-    		 //JOptionPane.showInputDialog("Please input a value");
     	}
 		return selected;
     }
@@ -268,13 +281,11 @@ public class App
     		String reqType = "POST";
         	// Open a connection with the site.
     		HttpURLConnection newConn = setupConn(url, reqType, false);
-    		if (newConn != null) {
-    			
+    		if (newConn != null) {    			
 		        // Use the file for selection
 		        HttpEntity reqEntity = MultipartEntityBuilder.create()
 		                    .addBinaryBody("file", new File(file))
-		                    .build();
-		        		        
+		                    .build();		        		        
 		        // Apparently we need this to set the length of content,
 		        // and specify type of content.
 		        newConn.addRequestProperty("Content-length", 
@@ -285,8 +296,7 @@ public class App
 		        OutputStream os = newConn.getOutputStream();
 		        reqEntity.writeTo(newConn.getOutputStream());
 		        os.close();
-		        newConn.connect();
-		        
+		        newConn.connect();		        
 		        if (newConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 		            System.out.println(newConn.getResponseMessage());
 		            String json_response = retrieveJSON(newConn);
@@ -302,7 +312,6 @@ public class App
             System.err.println(ex);
         }
 		return null;
-
     }
     
     /**
@@ -358,7 +367,6 @@ public class App
 	    // and specified job type.
 	    OutputStream os = conn.getOutputStream();
 	    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
-	    System.out.println(imageData);
 	    osw.write(imageData);
 	    osw.flush();
 	    os.close();
@@ -401,22 +409,13 @@ public class App
 	        // Write the message we want, namely the redis hash
 	        // we want to query the status of.
 	        OutputStream os = conn.getOutputStream();
-	        
-	        
 	        byte[] input = hash.getBytes("utf-8");
 	        os.write(input, 0, input.length);
 	        os.close();
-	           
-	        System.out.println(hash.getClass());
-	        
-	        
-	        conn.connect();
-	
+	        conn.connect();	
 	        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	            System.out.println(conn.getResponseMessage());
-	            
-	            String json_response = retrieveJSON(conn);
-	            
+	            String json_response = retrieveJSON(conn);	            
 	            conn.disconnect();
 	            return json_response;
 	        }
@@ -431,9 +430,7 @@ public class App
             System.err.println(ex);
             return null;
         }
-        
     	return null;
-
     }
 
     
@@ -452,23 +449,15 @@ public class App
 	    // Write the message
 	    OutputStream os = conn.getOutputStream();
 	    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
-	    System.out.println(expireHash);
 	    osw.write(expireHash);
-	    
 	    osw.flush();
 	    os.close();
-	    conn.connect();
-	
+	    conn.connect();	
 	    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	        System.out.println(conn.getResponseMessage());
-	        
 	        String json_response = retrieveJSON(conn);
-	        
 	        conn.disconnect();
-	        return json_response;
-	        
-	 
-	        
+	        return json_response;	        
 	    }
 	    else {
 	    	System.out.println(conn.getResponseMessage());
@@ -481,9 +470,7 @@ public class App
         System.err.println(ex);
         return null;
     }
-    
 	return null;
-
     }
     
     public String getRedis(String hash) {
@@ -495,23 +482,15 @@ public class App
 	    // Write the message
 	    OutputStream os = conn.getOutputStream();
 	    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
-	    System.out.println(hash);
 	    osw.write(hash);
-	    
 	    osw.flush();
 	    os.close();
-	    conn.connect();
-	
+	    conn.connect();	
 	    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	        System.out.println(conn.getResponseMessage());
-	        
 	        String json_response = retrieveJSON(conn);
-	        
 	        conn.disconnect();
-	        return json_response;
-	        
-	 
-	        
+	        return json_response;	        
 	    }
 	    else {
 	    	System.out.println(conn.getResponseMessage());
@@ -524,9 +503,7 @@ public class App
         System.err.println(ex);
         return null;
     }
-    
 	return null;
-
     }
 
  
@@ -599,7 +576,6 @@ public class App
             	// Process imageData and set it up for the 
             	// next request, predict.
             	Response response = g.fromJson(imageData, Response.class);
-                System.out.println(response.getuploadedName());
                                 
                 // Query available job types
             	String getJobTypes = newApp.getJobTypes();
@@ -611,13 +587,11 @@ public class App
                 // Combine the information we need for predict.
                 ImageInfo newImage = new ImageInfo(jobType, response.getuploadedName());
                 String theImage = g.toJson(newImage);
-                System.out.println(theImage);
                 
                 // Send next API request, predict, to add image
                 // to job queue.
                 String newRes = newApp.predictFile(theImage.toString());
             	if (newRes != null) {
-            		System.out.println("Yay!");
             		
             		// Add/query expiration
             		// Add user preference for minutes - done?
@@ -630,18 +604,12 @@ public class App
             		
             		// Query status: we don't need hash class here, because we're reusing
             		String status = newApp.getStatus(newRes);
-            		Status theStatus = g.fromJson(status, Status.class);
-            		
+            		Status theStatus = g.fromJson(status, Status.class);           		
             		String prevStatus = theStatus.status;
             		String updatedStatus = prevStatus;
-            		System.out.println("Hello again");
-            		System.out.println(updatedStatus);
             		while ((updatedStatus.compareTo("null") != 0) && (updatedStatus.compareTo("failed") != 0) && (updatedStatus.compareTo("done") != 0)) {
             			System.out.println(updatedStatus);
             			while (updatedStatus.compareTo(prevStatus) == 0) {
-            				System.out.println("Has the status updated?");
-            				System.out.println(updatedStatus == prevStatus);
-            				
             				try {
 								Thread.sleep(60000);
 								// Query status: we don't need hash class here, because we're reusing
@@ -651,38 +619,19 @@ public class App
 			            		if (updatedStatus != prevStatus) {
 			            			System.out.println("Status changed!");
 			            			System.out.println(updatedStatus);
-			            		}
-								
+			            		}								
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								 e.printStackTrace();
 							}
             			}
-            			System.out.println("Reached here");
             			prevStatus = updatedStatus;
-            		
-            		// TODO:            		
-            		// Test all
-            		// fetch output url??? How does this work? Don't see this
-            	    // in status code
-            		// It fails usually, but sometimes, it says started....is something wrong?
-            		
-            		// Next release
-            		// a few jobs at once, async http request, keep sending the request
-            		// stretch goal, select multiple file
-            		// take at least one file, do multiple jobs
-            		
             		}
-            		// 1. What are all the possible statuses?
-            		// 2. WHy isn't this working? Esp the download url
-            		// I think this is all I need for completion
-            		// use api/redis
             		if (updatedStatus.compareTo("failed") == 0) {
             			System.out.println("FAILURE!!!");
             			newRes = g.toJson(new getError(hashKey.hash, "reason"));
             			System.out.println(newApp.getRedis(newRes));
             		}
-            		// use api/redis?
             		if (updatedStatus.compareTo("done") == 0) {
             			System.out.println("DONE!!!");
             			newRes = g.toJson(new getError(hashKey.hash, "output_url"));
@@ -693,9 +642,7 @@ public class App
             		System.out.println("No!");
             	}
             }
-        }
-        
+        }        
         System.out.println("End of program");
-
     }
 }
