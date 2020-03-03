@@ -1,5 +1,6 @@
 package actualPlugin;
 
+// Imports by category
 // Exceptions
 import java.io.IOException;
 
@@ -33,8 +34,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.HttpURLConnection;
-
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.HttpEntity;
 
@@ -47,7 +46,7 @@ import org.apache.http.HttpEntity;
  */
 public class App 
 {
-	// Category: select dialog
+	// Category: Select dialog
     /** selectFileType helps you can pick a single image or
      * directory. A pop up will guide the user
      * through the steps.
@@ -103,7 +102,8 @@ public class App
     		 return selected;
     		}
     		catch (NumberFormatException e) {
-    			JOptionPane.showMessageDialog(null, "You did not input a number. Please input a number.");
+    			JOptionPane.showMessageDialog(null, "You did not input a number. Please "
+    					+ "input a number.");
     		}
     		 //JOptionPane.showInputDialog("Please input a value");
     	}
@@ -117,7 +117,8 @@ public class App
      *  to zip
      *  @return None
      */
-    private static void zipFile(File file, String fileName, ZipOutputStream zipped) throws IOException {
+    private static void zipFile(File file, String fileName, ZipOutputStream zipped) throws 
+    																		IOException {
         if (file.isDirectory()) {
             zipped.putNextEntry(new ZipEntry(fileName + (fileName.endsWith("/") ? "" : "/")));
             zipped.closeEntry();
@@ -150,41 +151,6 @@ public class App
         final List<String> extensions = Arrays.asList("jpg", "png", "gif");
         JFileChooser picker = new JFileChooser();
         picker.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
-        /*picker.setFileFilter(new javax.swing.filechooser.FileFilter(){
-            @Override
-            // So far, this doesn't quite work yet, so it might
-            // be phased out in the future. I tried to make it easier to
-            // select jpg, png, gifs or directories solely containing these
-            // items, but for now, I am hoping the user will know where
-            // their stuff is.
-            public boolean accept(java.io.File file){
-                File[] children = file.listFiles();
-                if (children != null) {
-                    for (File child : children) {
-                        if (!child.isDirectory()) {
-                            boolean found = false;
-                            for (String extn : extensions) {
-                                if (child.getName().endsWith(extn)) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found == false) {
-                                return false;
-                            }
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public String getDescription() {return "Hi!";}
-        });*/
         // Open the file explorer at user.home
         picker.setCurrentDirectory(new File(System.getProperty("user.home")));
         int result = picker.showOpenDialog(null);
@@ -206,7 +172,6 @@ public class App
      *  or null if no file was selected
      */
     public String selectSingleFile() {
-    		// 
     		JFrame jf = new JFrame();
             JFileChooser picker = new JFileChooser();
             jf.add(picker);
@@ -237,7 +202,7 @@ public class App
      * @param reqType : POST or GET, usually - type of request
      * @return a valid connection object or null if something goes wrong.
      */
-    public HttpURLConnection setupConn(String url, String reqType) {
+    public HttpURLConnection setupConn(String url, String reqType, boolean setJSON) {
     	try {
 	    	URL requestURL = new URL(url);
 	        HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
@@ -249,6 +214,10 @@ public class App
 	        // We wish to make post and get requests!
 	        conn.setDoInput(true);
 	        conn.setDoOutput(true);
+	        if (setJSON == true) {
+	        	conn.setRequestProperty( "Content-Type", "application/json" );
+	            conn.setRequestProperty("Accept", "application/json");
+	        }
 	        return conn;
     	}
     	catch(IOException e) {
@@ -298,7 +267,7 @@ public class App
     		String url = "http://deepcell.org/api/upload";
     		String reqType = "POST";
         	// Open a connection with the site.
-    		HttpURLConnection newConn = setupConn(url, reqType);
+    		HttpURLConnection newConn = setupConn(url, reqType, false);
     		if (newConn != null) {
     			
 		        // Use the file for selection
@@ -308,8 +277,10 @@ public class App
 		        		        
 		        // Apparently we need this to set the length of content,
 		        // and specify type of content.
-		        newConn.addRequestProperty("Content-length", Objects.toString(reqEntity.getContentLength()));
-		        newConn.addRequestProperty(reqEntity.getContentType().getName(), reqEntity.getContentType().getValue());
+		        newConn.addRequestProperty("Content-length", 
+		        		Objects.toString(reqEntity.getContentLength()));
+		        newConn.addRequestProperty(reqEntity.getContentType().getName(), 
+		        		reqEntity.getContentType().getValue());
 		        // Write in the file to be sent
 		        OutputStream os = newConn.getOutputStream();
 		        reqEntity.writeTo(newConn.getOutputStream());
@@ -346,7 +317,7 @@ public class App
         	String url = "http://deepcell.org/api/jobtypes";
         	String reqType = "GET";
         	// Open a connection with the main site.
-	        HttpURLConnection conn = setupConn(url, reqType);
+	        HttpURLConnection conn = setupConn(url, reqType, false);
 	        conn.connect();	
 	        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	            System.out.println(conn.getResponseMessage());
@@ -382,10 +353,7 @@ public class App
     	String url = "http://deepcell.org/api/predict";
     	String reqType = "POST";
     	// Open a connection with the main site.
-	    HttpURLConnection conn = setupConn(url, reqType);
-	    
-	    conn.setRequestProperty( "Content-Type", "application/json" );
-        conn.setRequestProperty("Accept", "application/json");
+	    HttpURLConnection conn = setupConn(url, reqType, true);
 	    // Write the message with information about the image
 	    // and specified job type.
 	    OutputStream os = conn.getOutputStream();
@@ -429,11 +397,9 @@ public class App
         	String url = "http://deepcell.org/api/status";
         	String reqType = "POST";
         	// Open a connection with the main site.
-	        HttpURLConnection conn = setupConn(url, reqType);
+	        HttpURLConnection conn = setupConn(url, reqType, true);
 	        // Write the message we want, namely the redis hash
 	        // we want to query the status of.
-	        conn.setRequestProperty( "Content-Type", "application/json" );
-	        conn.setRequestProperty("Accept", "application/json");
 	        OutputStream os = conn.getOutputStream();
 	        
 	        
@@ -482,9 +448,7 @@ public class App
     	String url = "http://deepcell.org/api/redis/expire";
     	String reqType = "POST";
     	// Open a connection with the main site.
-	    HttpURLConnection conn = setupConn(url, reqType);
-	    conn.setRequestProperty( "Content-Type", "application/json" );
-        conn.setRequestProperty("Accept", "application/json");
+	    HttpURLConnection conn = setupConn(url, reqType, true);
 	    // Write the message
 	    OutputStream os = conn.getOutputStream();
 	    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
@@ -524,12 +488,10 @@ public class App
     
     public String getRedis(String hash) {
     	try {
-    	String url = "http://deepcell.org/api/redis/expire";
+    	String url = "http://deepcell.org/api/redis/";
     	String reqType = "POST";
     	// Open a connection with the main site.
-	    HttpURLConnection conn = setupConn(url, reqType);
-	    conn.setRequestProperty( "Content-Type", "application/json" );
-        conn.setRequestProperty("Accept", "application/json");
+	    HttpURLConnection conn = setupConn(url, reqType, true);
 	    // Write the message
 	    OutputStream os = conn.getOutputStream();
 	    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");   
@@ -674,7 +636,7 @@ public class App
             		String updatedStatus = prevStatus;
             		System.out.println("Hello again");
             		System.out.println(updatedStatus);
-            		while ((updatedStatus.compareTo("expired") != 0) && (updatedStatus.compareTo("failed") != 0) && (updatedStatus.compareTo("done") != 0)) {
+            		while ((updatedStatus.compareTo("null") != 0) && (updatedStatus.compareTo("failed") != 0) && (updatedStatus.compareTo("done") != 0)) {
             			System.out.println(updatedStatus);
             			while (updatedStatus.compareTo(prevStatus) == 0) {
             				System.out.println("Has the status updated?");
@@ -717,11 +679,13 @@ public class App
             		// use api/redis
             		if (updatedStatus.compareTo("failed") == 0) {
             			System.out.println("FAILURE!!!");
+            			newRes = g.toJson(new getError(hashKey.hash, "reason"));
             			System.out.println(newApp.getRedis(newRes));
             		}
             		// use api/redis?
             		if (updatedStatus.compareTo("done") == 0) {
             			System.out.println("DONE!!!");
+            			newRes = g.toJson(new getError(hashKey.hash, "output_url"));
             			System.out.println(newApp.getRedis(newRes));
             		}
             	}
