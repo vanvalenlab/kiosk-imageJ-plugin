@@ -47,17 +47,13 @@ import org.apache.http.HttpEntity;
  * // a few jobs at once, async http request, keep sending the request
  * // stretch goal, select multiple file
  * // take at least one file, do multiple jobs
- * }
- * // 1. What are all the possible statuses?
- * // 2. WHy isn't this working? Esp the download url
- * // I think this is all I need for completion
- * // use api/redis
  *
  */
 public class App 
 {
-	// Category: Select dialog
-    /** selectFileType helps you can pick a single image or
+    // Category: Select dialog
+    /** 
+     * selectFileType helps you can pick a single image or
      * directory. A pop up will guide the user
      * through the steps.
      * @param None
@@ -79,7 +75,8 @@ public class App
     }
     
     
-    /** selectJobType helps you can pick from the available job types. 
+    /** 
+     * selectJobType helps you can pick from the available job types. 
      * A pop up will guide the user
      * through the steps.
      * @param options, a list of acceptable job types queried
@@ -98,7 +95,8 @@ public class App
     }
 
     
-    /** minutesForJob() helps you enter how many minutes you are
+    /** 
+     * minutesForJob() helps you enter how many minutes you are
      * willing to wait for a job.
      * @param None
      * @return selected, a value that has been entered and parsed as
@@ -152,8 +150,9 @@ public class App
 
     
     // Category: File selection
-    /** selectDirectory displays a file explorer, which
-     *  will let you select a specific
+    /** 
+     * selectDirectory displays a file explorer, which
+     * will let you select a specific
      * directory which hopefully contains the batch of
      * images needed to process.
      *  @param None
@@ -177,7 +176,8 @@ public class App
     }
 
     
-    /** selectSingleFile displays a file explorer, which
+    /** 
+     * selectSingleFile displays a file explorer, which
      * will let you select a specific
      * image to process.
      *  @param None
@@ -473,6 +473,14 @@ public class App
 	return null;
     }
     
+	
+    /** 
+     * getRedis retrieves the Redis key of the job
+     * using a POST request.
+     * @param String hash
+     * @return String json_response, which should
+     *         contain the Redis key.
+     */
     public String getRedis(String hash) {
     	try {
     	String url = "http://deepcell.org/api/redis/";
