@@ -6,7 +6,7 @@ package actualPlugin;
 public class GetError {
 	String hash;
 	String key;
-	public getError(String hash1, String key1) {
+	public GetError(String hash1, String key1) {
 		this.hash = hash1;
 		this.key = key1;
 	}
