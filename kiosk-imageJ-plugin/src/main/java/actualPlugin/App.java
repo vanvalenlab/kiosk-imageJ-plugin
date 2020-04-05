@@ -637,12 +637,12 @@ public class App
             		}
             		if (updatedStatus.compareTo("failed") == 0) {
             			System.out.println("FAILURE!!!");
-            			newRes = g.toJson(new getError(hashKey.hash, "reason"));
+            			newRes = g.toJson(new GetError(hashKey.hash, "reason"));
             			System.out.println(newApp.getRedis(newRes));
             		}
             		if (updatedStatus.compareTo("done") == 0) {
             			System.out.println("DONE!!!");
-            			newRes = g.toJson(new getError(hashKey.hash, "output_url"));
+            			newRes = g.toJson(new GetError(hashKey.hash, "output_url"));
             			System.out.println(newApp.getRedis(newRes));
             		}
             	}

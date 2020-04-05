@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>actualPlugin</groupId>
-  <artifactId>kiosk-imageJ-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>Kiosk_ImageJ_Plugin</artifactId>
+  <version>1.0</version>
 
-  <name>kiosk-imageJ-plugin</name>
+  <name>Kiosk_ImageJ_Plugin</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
