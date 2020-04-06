@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>actualPlugin</groupId>
-  <artifactId>Kiosk_ImageJ_Plugin</artifactId>
+  <artifactId>Kiosk_ImageJ_Plugin_</artifactId>
   <version>1.0</version>
 
   <name>Kiosk_ImageJ_Plugin</name>
@@ -146,6 +146,7 @@
                     <include>
                       org.apache.http:client:methods:HttpUriRequest
                     </include>
+                    
                   </includes>
                   <excludes>
                     <exclude>classworlds:classworlds</exclude>

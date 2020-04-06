@@ -37,10 +37,25 @@ import java.net.HttpURLConnection;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.HttpEntity;
 
+// ImageJ Related
+//import ij.*;
+//import ij.plugin.PlugIn;
+//import ij.process.*;
+//import java.awt.*;
+
+import ij.*;
+import ij.process.*;
+import ij.gui.*;
+import java.awt.*;
+import ij.plugin.*;
+import ij.plugin.frame.*;
+import ij.text.TextWindow;
+
+
 
 
 /**
- * So far, App lets you select a file type,
+ * So far, Kiosk_ImageJ_Plugin lets you select a file type,
  * and it zips directories if selected.
  * // TODO:
  * // Next release
@@ -49,7 +64,7 @@ import org.apache.http.HttpEntity;
  * // take at least one file, do multiple jobs
  *
  */
-public class App 
+public class Kiosk_ImageJ_Plugin_ implements PlugIn
 {
     // Category: Select dialog
     /** 
@@ -525,15 +540,20 @@ public class App
      * 5. Query job status.
      * 6. Update or retrieve expiration status.
     */
-    public static void main( String[] args )//  throws IOException
+    //public static void main( String[] args )//  throws IOException
+    public void run(String arg)//  throws IOException
     {
+		//ImagePlus imp = IJ.getImage();
+		//IJ.run(imp, "Invert", "");
+		//IJ.wait(1000);
+		//IJ.run(imp, "Invert", "");
         // If we don't want to exit the program,
         // use this.
         boolean quit = false;
         // Indicator of whether the file type has been picked.
         int fileTypePicked = 0;
         String file = null;
-        App newApp = new App();
+        Kiosk_ImageJ_Plugin_ newApp = new Kiosk_ImageJ_Plugin_();
         while (fileTypePicked == 0) {
             fileTypePicked = newApp.selectFileType();
         }
@@ -639,11 +659,13 @@ public class App
             			System.out.println("FAILURE!!!");
             			newRes = g.toJson(new GetError(hashKey.hash, "reason"));
             			System.out.println(newApp.getRedis(newRes));
+            			new TextWindow("FAILURE!!!", newRes,  450, 450);
             		}
             		if (updatedStatus.compareTo("done") == 0) {
             			System.out.println("DONE!!!");
             			newRes = g.toJson(new GetError(hashKey.hash, "output_url"));
             			System.out.println(newApp.getRedis(newRes));
+            			new TextWindow("DONE!!!", newRes,  450, 450);
             		}
             	}
             	else {
