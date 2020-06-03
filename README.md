@@ -1,17 +1,24 @@
-# kiosk-imageJ-plugin
-The goal is to submit images to an existing Kubernetes cluster, get results, identify folder for batch submission, and ID workflow
+# ![DeepCell Kiosk Banner](https://raw.githubusercontent.com/vanvalenlab/kiosk-console/master/docs/images/DeepCell_Kiosk_Banner.png)
 
-## Ideally, you should use this if:
-* You use imageJ,
-* You want to submit individual files for deep cell jobs straight from your directory without navigating the site,
-* You want to submit individual directories with images for deep cell jobs straight from your directory without navigating the site, and
-* You want to give a undergraduate student helpful feedback on usability.
+[![Build Status](https://travis-ci.com/vanvalenlab/kiosk-imageJ-plugin.svg?branch=master)](https://travis-ci.com/vanvalenlab/kiosk-imageJ-plugin)
+[![Coverage Status](https://coveralls.io/repos/github/vanvalenlab/kiosk-imageJ-plugin/badge.svg?branch=master)](https://coveralls.io/github/vanvalenlab/kiosk-imageJ-plugin?branch=master)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](/LICENSE)
 
-## To run this:
-* As of now here's what you do:
-1. Get the jar from a link that will be posted here.
-2. Run the jar.
-3. You will get an option to select whether to upload individual files or directories.
-4. You will then get an option to select the job type you want, from the available job types deep cell supports.
-5. You will then get an option to specify how long you want to wait for your job.
-6. You wait. For success and hopefully a download url that will be displayed, or failure with hopefully a reason why.
+The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images with an existing DeepCell Kiosk from within ImageJ.
+
+## How to install
+
+1. Download the JAR file.
+2. Open ImageJ
+3. Navigate to Plugins > Install...
+4. Select the downloaded JAR file.
+5. Install it into the `jars` directory.
+
+## How to Run the plugin
+
+1. Open an image in ImageJ.
+2. Navigate to Plugins > DeepCell Kiosk > Submit Active Image.
+3. Update custom options (especially the DeepCell Kiosk Host to your own Kiosk IP address).
+4. Select the job type ("segmentation" is default). Please make sure your image is appropriate for the job.
+5. Click OK to run the job.
+6. Await your results! They should be automatically downloaded and opened.

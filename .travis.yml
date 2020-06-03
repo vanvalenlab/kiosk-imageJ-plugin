@@ -1,0 +1,25 @@
+dist: xenial
+
+language: java
+
+jdk:
+  - openjdk8
+
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script:
+  - mvn test -B
+
+before_cache:
+  - export NAME="$(mvn -B -q -Dexec.executable=echo -Dexec.args='${project.artifactId}-${project.version}' --non-recursive exec:exec 2>/dev/null)"
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file: "./target/${NAME}.jar"
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
+    jdk: openjdk8
