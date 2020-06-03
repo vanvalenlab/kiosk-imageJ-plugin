@@ -1,3 +1,6 @@
+# IntelliJ
+.idea/
+
 # Maven files
 target/
 pom.xml.tag
