@@ -4,12 +4,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-<!--  <parent>-->
-<!--    <groupId>org.scijava</groupId>-->
-<!--    <artifactId>pom-scijava</artifactId>-->
-<!--    <version>28.0.0</version>-->
-<!--    <relativePath />-->
-<!--  </parent>-->
+  <parent>
+    <groupId>org.scijava</groupId>
+    <artifactId>pom-scijava</artifactId>
+    <version>28.0.0</version>
+    <relativePath />
+  </parent>
 
   <groupId>com.vanvalenlab</groupId>
   <artifactId>Kiosk_ImageJ_Plugin_</artifactId>
@@ -34,10 +34,14 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
     <license.licenseName>modified_apache_2</license.licenseName>
     <license.copyrightOwners>The Van Valen Lab</license.copyrightOwners>
+
+    <okhttp.version>4.7.2</okhttp.version>
+    <gson.version>2.8.5</gson.version>
+    <imagej.version>1.53a</imagej.version>
+    <junit.version>4.12</junit.version>
+    <junit.jupiter.version>5.6.2</junit.jupiter.version>
   </properties>
 
   <dependencies>
@@ -46,35 +50,36 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.7.2</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.scijava/scijava-common -->
-    <dependency>
-      <groupId>org.scijava</groupId>
-      <artifactId>scijava-common</artifactId>
-      <version>2.83.3</version>
+      <version>${okhttp.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/net.imagej/imagej -->
     <dependency>
       <groupId>net.imagej</groupId>
       <artifactId>ij</artifactId>
-      <version>1.53a</version>
+      <version>${imagej.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.8.6</version>
+      <version>${gson.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -82,103 +87,55 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>mockwebserver</artifactId>
-      <version>4.7.2</version>
+      <version>${okhttp.version}</version>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <!-- -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>3.2.2</version>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>shade</goal>
-              </goals>
-              <configuration>
-                <artifactSet>
-                  <includes>
-                    <include>
-                      org.apache.httpcomponents
-                    </include>
-                    <include>
-                      org.apache.http:client:methods:HttpUriRequest
-                    </include>
-                  </includes>
-                  <excludes>
-                    <exclude>classworlds:classworlds</exclude>
-                    <exclude>junit:junit</exclude>
-                    <exclude>jmock:*</exclude>
-                    <exclude>*:xml-apis</exclude>
-                    <exclude>org.apache.maven:lib:tests</exclude>
-                    <exclude>log4j:log4j:jar:</exclude>
-                  </excludes>
-                </artifactSet>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <plugins>
+
+      <!-- Code Coverage report generation -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.5</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Coveralls Code Coverage integration -->
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>4.3.0</version>
+      </plugin>
+
+    </plugins>
   </build>
 
   <developers>
     <developer>
       <name>Vibha Vijayakumar</name>
-      <roles><role>developer</role></roles>
     </developer>
   </developers>
 
   <contributors>
     <contributor>
       <name>Vibha Vijayakumar</name>
-      <roles><role>developer</role></roles>
     </contributor>
   </contributors>
 
@@ -204,22 +161,5 @@
   <ciManagement>
     <system>None</system>
   </ciManagement>
-
-<!--  <reporting>-->
-<!--    <plugins>-->
-<!--      <plugin>-->
-<!--        <groupId>org.jacoco</groupId>-->
-<!--        <artifactId>jacoco-maven-plugin</artifactId>-->
-<!--        <reportSets>-->
-<!--          <reportSet>-->
-<!--            <reports>-->
-<!--              &lt;!&ndash; select non-aggregate reports &ndash;&gt;-->
-<!--              <report>report</report>-->
-<!--            </reports>-->
-<!--          </reportSet>-->
-<!--        </reportSets>-->
-<!--      </plugin>-->
-<!--    </plugins>-->
-<!--  </reporting>-->
 
 </project>
