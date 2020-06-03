@@ -3,4 +3,19 @@ dist: xenial
 language: java
 
 jdk:
+  - oraclejdk8
   - openjdk8
+
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script:
+  - mvn test -B
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file: "./target/$(mvn -B -q -Dexec.executable=echo -Dexec.args='${project.artifactId}-${project.version}' --non-recursive exec:exec 2>/dev/null)"
+  skip_cleanup: true
+  on:
+    tags: true
