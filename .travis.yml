@@ -9,7 +9,7 @@ install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
-  - mvn test -B
+  - mvn test coveralls:report -B
 
 before_cache:
   - export NAME="$(mvn -B -q -Dexec.executable=echo -Dexec.args='${project.artifactId}-${project.version}' --non-recursive exec:exec 2>/dev/null)"
