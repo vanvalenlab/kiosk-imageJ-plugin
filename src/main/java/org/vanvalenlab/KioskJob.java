@@ -10,18 +10,11 @@ public class KioskJob {
     private String jobHash;
     private final String jobType;
     private String status;
-    private int expireTime;
     private boolean isExpired;
 
-    /**
-     * Constructor with no kioskClient passed.
-     * @param host The DeepCell Kiosk host.
-     * @param jobType Type of DeepCell Kiosk Job.
-     */
     public KioskJob(String host, String jobType) {
         this.kioskClient = new KioskHttpClient(host);
         this.status = null;
-        this.expireTime = 3600;
         this.isExpired = false;
         this.jobHash = null;
         this.jobType = jobType;
@@ -31,7 +24,7 @@ public class KioskJob {
     public String getStatus() { return status; }
     public String getJobHash() { return jobHash; }
     public String getJobType() { return jobType; }
-    public int getExpireTime() { return expireTime; }
+    public boolean isExpired() { return this.isExpired; }
     // END: Getters & Setters
 
     // START: helper methods
@@ -63,7 +56,7 @@ public class KioskJob {
 
             // log the new status
             boolean isNewStatus = false;
-            if (currentStatus instanceof String) {  // status has updated
+            if (null != currentStatus) {  // status has updated
                 if (previousStatus instanceof String) {
                     isNewStatus = !currentStatus.equals(previousStatus);
                 } else {
@@ -87,7 +80,6 @@ public class KioskJob {
     // END: helper methods
 
     // START: HTTP API wrapper methods
-
     /**
      * Create the DeepCell Kiosk job.
      * @param imageName The path of the image to process
@@ -95,6 +87,9 @@ public class KioskJob {
      */
     public void create(String imageName) throws IOException {
         String uploadPath = this.kioskClient.uploadFile(imageName);
+        if (null == uploadPath) {
+            throw new IOException(String.format("Failed to upload %s", imageName));
+        }
         String jobHash = this.kioskClient.createJob(imageName, uploadPath, this.jobType);
         this.jobHash = jobHash;
     }

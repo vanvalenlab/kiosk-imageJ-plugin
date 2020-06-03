@@ -9,8 +9,5 @@ public class ExpireResponse implements KioskResponse {
 	public int getValue() {
 		return this.value;
 	}
-	
-	public ExpireResponse(int value) {
-		this.value = value;
-	}
+
 }
