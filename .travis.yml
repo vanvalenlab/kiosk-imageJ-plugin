@@ -2,6 +2,9 @@ dist: xenial
 
 language: java
 
+services:
+  - xvfb
+
 jdk:
   - openjdk8
 
