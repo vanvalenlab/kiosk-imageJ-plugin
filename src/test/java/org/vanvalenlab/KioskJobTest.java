@@ -3,6 +3,7 @@ package org.vanvalenlab;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
@@ -12,6 +13,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.vanvalenlab.responses.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class KioskJobTest {
     private MockWebServer server;
     private HttpUrl baseUrl;
     private String jobType = "test";
+    private Gson g;
 
     @Before
     public void setUp() throws IOException {
@@ -29,6 +32,7 @@ public class KioskJobTest {
         server.start();
         baseUrl = server.url("/api");
         kioskJob = new KioskJob(baseUrl.toString(), jobType);
+        g = new Gson();
     }
 
     @After
@@ -41,8 +45,7 @@ public class KioskJobTest {
 
     @Test
     public void testHasFinalStatus() throws IOException {
-        // format string for easily creating responses.
-        String responseFmtStr = "{\"status\": \"%s\"}";
+        String response;
 
         // new job should have null (false) final status
         assertEquals(null, kioskJob.getStatus());
@@ -50,21 +53,25 @@ public class KioskJobTest {
 
         // update status to intermediate status
         String nextStatus = "testing";
-        server.enqueue(new MockResponse().setBody(String.format(responseFmtStr, nextStatus)));
+        response = g.toJson(new GetStatusResponse(nextStatus));
+        server.enqueue(new MockResponse().setBody(response));
+        System.out.println(response);
         kioskJob.updateStatus();
         assertEquals(nextStatus, kioskJob.getStatus());
         assertEquals(false, kioskJob.hasFinalStatus());
 
         // update status to failed status
         nextStatus = Constants.FAILED_STATUS;
-        server.enqueue(new MockResponse().setBody(String.format(responseFmtStr, nextStatus)));
+        response = g.toJson(new GetStatusResponse(nextStatus));
+        server.enqueue(new MockResponse().setBody(response));
         kioskJob.updateStatus();
         assertEquals(nextStatus, kioskJob.getStatus());
         assertEquals(true, kioskJob.hasFinalStatus());
 
         // update status to success status
         nextStatus = Constants.SUCCESS_STATUS;
-        server.enqueue(new MockResponse().setBody(String.format(responseFmtStr, nextStatus)));
+        response = g.toJson(new GetStatusResponse(nextStatus));
+        server.enqueue(new MockResponse().setBody(response));
         kioskJob.updateStatus();
         assertEquals(nextStatus, kioskJob.getStatus());
         assertEquals(true, kioskJob.hasFinalStatus());
@@ -75,16 +82,15 @@ public class KioskJobTest {
         int updateInterval = 0; // don't sleep in the tests!
         String expectedFinalStatus = Constants.SUCCESS_STATUS;
         // format string for easily creating responses.
-        String responseFmtStr = "{\"status\": \"%s\"}";
 
         // 4 status updates, null -> testing -> testing -> done
         server.enqueue(new MockResponse().setBody("{}"));
         server.enqueue(new MockResponse().setBody(
-                String.format(responseFmtStr, "testing")));
+                g.toJson(new GetStatusResponse("testing"))));
         server.enqueue(new MockResponse().setBody(
-                String.format(responseFmtStr, "testing")));
-        server.enqueue(new MockResponse().setBody(String.format(
-                responseFmtStr, expectedFinalStatus)));
+                g.toJson(new GetStatusResponse("testing"))));
+        server.enqueue(new MockResponse().setBody(
+                g.toJson(new GetStatusResponse(expectedFinalStatus))));
 
         String finalStatus = kioskJob.waitForFinalStatus(updateInterval);
         assertEquals(expectedFinalStatus, finalStatus);
@@ -98,11 +104,12 @@ public class KioskJobTest {
         // successful responses
         String expectedUploadPath = "uploadedFilePath.jpg";
         String expectedURL = "http://test.com/uploadedFilePath.jpg";
-        String expectedUploadResponse = String.format(
-                "{\"uploadedName\": \"%s\", \"imageURL\": \"%s\"}",
-                expectedUploadPath, expectedURL);
+
+        String expectedUploadResponse = g.toJson(
+                new UploadFileResponse(expectedUploadPath, expectedURL));
         String expectedHash = "newJobHash";
-        String expectedCreateResponse = String.format("{\"hash\": \"%s\"}", expectedHash);
+        String expectedCreateResponse = g.toJson(
+                new CreateJobResponse(expectedHash));
         server.enqueue(new MockResponse().setBody(expectedUploadResponse));
         server.enqueue(new MockResponse().setBody(expectedCreateResponse));
         kioskJob.create(filePath);
@@ -153,8 +160,6 @@ public class KioskJobTest {
         assertThrows(JsonSyntaxException.class, () ->
                 kioskJob.create(filePath)
         );
-
-
     }
 
     @Test
@@ -163,7 +168,7 @@ public class KioskJobTest {
         // successful response
         int expectedValue = 99;
         assertEquals(false, kioskJob.isExpired());
-        String expectedResponse = String.format("{\"value\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(new ExpireResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         kioskJob.expire(expireTime);
         assertEquals(expectedValue, expectedValue);
@@ -198,7 +203,7 @@ public class KioskJobTest {
     public void testUpdateStatus() throws IOException {
         // successful response
         String expectedValue = "success!";
-        String expectedResponse = String.format("{\"status\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(new GetStatusResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         kioskJob.updateStatus();
         assertEquals(expectedValue, kioskJob.getStatus());
@@ -225,7 +230,9 @@ public class KioskJobTest {
     public void testGetOutputPath() throws IOException {
         // successful response
         String expectedValue = "success!";
-        String expectedResponse = String.format("{\"value\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(
+                new GetRedisValueResponse(expectedValue));
+
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskJob.getOutputPath();
         assertEquals(expectedValue, response);
@@ -252,7 +259,8 @@ public class KioskJobTest {
     public void testGetErrorReason() throws IOException {
         // successful response
         String expectedValue = "success!";
-        String expectedResponse = String.format("{\"value\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(
+                new GetRedisValueResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskJob.getErrorReason();
         assertEquals(expectedValue, response);
@@ -275,26 +283,4 @@ public class KioskJobTest {
         );
     }
 
-//    @Test
-//    public void assureThatDoSomethingReturnsLowValueInts() {
-//        int returned = _testObject.doSomething("", 0);
-//        assertThat(returned, Matchers.is(0));
-//        returned = _testObject.doSomething("", 9);
-//        assertThat(returned, Matchers.is(9));
-//        returned = _testObject.doSomething("", Integer.MIN_VALUE);
-//        assertThat(returned, Matchers.is(Integer.MIN_VALUE));
-//    }
-
-//    @Test
-//    public void assureThatDoSomethingReturnsParsedStringForHighParam2Values() {
-//        int returned = _testObject.doSomething("1234", 10);
-//        assertThat(returned, Matchers.is(1234));
-//        returned = _testObject.doSomething("4567", Integer.MAX_VALUE);
-//        assertThat(returned, Matchers.is(4567));
-//    }
-
-//    @Test(expected=NumberFormatException.class)
-//    public void assureThatDoSomethingThrowsExceptionForNonParseableString() {
-//        _testObject.doSomething("+-*~", 10);
-//    }
 }

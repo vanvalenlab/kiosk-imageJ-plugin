@@ -7,6 +7,11 @@ public class UploadFileResponse implements KioskResponse {
 	String imageURL;
 	String uploadedName;
 
+	public UploadFileResponse(String uploadedName, String imageURL) {
+		this.uploadedName = uploadedName;
+		this.imageURL = imageURL;
+	}
+
 //	public String getImageURL() {
 //		return imageURL;
 //	}
