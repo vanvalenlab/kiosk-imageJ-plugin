@@ -29,13 +29,12 @@ public class KioskJobManager {
      * @param host The DeepCell Kiosk host.
      * @return Selected jobType.
      */
-    public static String selectJobType(String host) {
+    public static String selectJobType(String host) throws IOException {
         final String[] jobTypes;
-        try {
-            jobTypes = (new KioskHttpClient(host)).getJobTypes();
-        } catch(IOException e) {
-            IJ.handleException(e);
-            return null;
+        jobTypes = (new KioskHttpClient(host)).getJobTypes();
+        if (null == jobTypes) {
+            String err = "No Job Types found. Check the DeepCell Kiosk status.";
+            throw new IOException(err);
         }
 
         String jobType = null;
@@ -49,7 +48,9 @@ public class KioskJobManager {
                 1,
                 jobTypes[0]);
 
+        System.out.println("About to show dialog");
         gd.showDialog();
+        System.out.println("Dialog shown");
         if (!gd.wasCanceled()) {
             jobType = gd.getNextRadioButton();
         }
@@ -99,34 +100,34 @@ public class KioskJobManager {
      * @param file The file to upload for the job.
      * @param options Map of all configuration options.
      */
-    public static void runJob(String jobType, String file, Map<String, Object> options) {
+    public static void runJob(
+            String jobType,
+            String file,
+            Map<String, Object> options) throws IOException, KioskJobFailedException {
         final String host = (String)options.get(Constants.KIOSK_HOST);
         final int updateInterval = (int)options.get(Constants.UPDATE_STATUS_MILLISECONDS);
         final int expireTime = (int)options.get(Constants.EXPIRE_TIME_SECONDS);
 
-        try {
-            KioskJob job = new KioskJob(host, jobType);
-            job.create(file);  // Upload file and start job.
+        KioskJob job = new KioskJob(host, jobType);
+        job.create(file);  // Upload file and start job.
 
-            // Periodically check the job status until it is "done" or "failed".
-            String finalStatus = job.waitForFinalStatus(updateInterval);
+        // Periodically check the job status until it is "done" or "failed".
+        String finalStatus = job.waitForFinalStatus(updateInterval);
 
-            // expire the job
-            job.expire(expireTime);
+        // expire the job
+        job.expire(expireTime);
 
-            // Job is finished! Get error if failed, otherwise get file URL.
-            if (finalStatus.equals(Constants.FAILED_STATUS)) {
-                String error = job.getErrorReason();
-                IJ.handleException(new KioskJobFailedException(error));
-            }
-            else if (finalStatus.equals(Constants.SUCCESS_STATUS)) {
-                String outputPath = job.getOutputPath();
-                Opener opener = new Opener();
-                ImagePlus outputImage = opener.openURL(outputPath);
-                outputImage.show(Constants.SUCCESS_MESSAGE);
-            }
-        } catch (IOException ex) {
-            IJ.handleException(ex);
+        // Job is finished! Get error if failed, otherwise get file URL.
+        if (finalStatus.equals(Constants.FAILED_STATUS)) {
+            String error = job.getErrorReason();
+            throw new KioskJobFailedException(error);
         }
+        else if (finalStatus.equals(Constants.SUCCESS_STATUS)) {
+            String outputPath = job.getOutputPath();
+            Opener opener = new Opener();
+            ImagePlus outputImage = opener.openURL(outputPath);
+            outputImage.show(Constants.SUCCESS_MESSAGE);
+        }
+        else throw new RuntimeException("Unknown final status: " + finalStatus);
     }
 }

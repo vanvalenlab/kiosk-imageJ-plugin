@@ -1,5 +1,6 @@
 package org.vanvalenlab;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.vanvalenlab.responses.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +25,7 @@ public class KioskHttpClientTest {
     private KioskHttpClient kioskHttpClient;
     private MockWebServer server;
     private HttpUrl baseUrl;
+    private Gson g;
 
     @Before
     public void setUp() throws IOException {
@@ -30,6 +33,7 @@ public class KioskHttpClientTest {
         server.start();
         baseUrl = server.url("/api");
         kioskHttpClient = new KioskHttpClient(baseUrl.toString());
+        g = new Gson();
     }
 
     @After
@@ -66,7 +70,7 @@ public class KioskHttpClientTest {
 
         // successful response
         String expectedValue = "success!";
-        String expectedResponse = String.format("{\"value\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(new GetRedisValueResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskHttpClient.getRedisValue(redisHash, redisKey);
         assertEquals(expectedValue, response);
@@ -97,9 +101,9 @@ public class KioskHttpClientTest {
         // successful response
         String expectedValue = "uploadedFilePath.jpg";
         String expectedURL = "http://test.com/uploadedFilePath.jpg";
-        String expectedResponse = String.format(
-                "{\"uploadedName\": \"%s\", \"imageURL\": \"%s\"}",
-                expectedValue, expectedURL);
+        String expectedResponse = g.toJson(
+                new UploadFileResponse(expectedValue, expectedURL));
+
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskHttpClient.uploadFile(filePath);
         assertEquals(expectedValue, response);
@@ -136,7 +140,7 @@ public class KioskHttpClientTest {
 
         // successful response
         int expectedValue = 1;
-        String expectedResponse = String.format("{\"value\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(new ExpireResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         int response = kioskHttpClient.expireRedisHash(redisHash, expireTime);
         assertEquals(expectedValue, response);
@@ -163,8 +167,8 @@ public class KioskHttpClientTest {
     public void testGetJobTypes() throws IOException {
         // successful response
         String[] expectedJobTypes = {"exampleType"};
-        String expectedValue = String.format("[\"%s\"]", expectedJobTypes[0]);
-        String expectedResponse = String.format("{\"jobTypes\": %s}", expectedValue);
+        String expectedResponse = g.toJson(new JobTypesResponse(expectedJobTypes));
+
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String[] response = kioskHttpClient.getJobTypes();
         assertArrayEquals(response, expectedJobTypes);
@@ -193,7 +197,7 @@ public class KioskHttpClientTest {
 
         // successful response
         String expectedValue = "testing";
-        String expectedResponse = String.format("{\"status\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(new GetStatusResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskHttpClient.getStatus(redisHash);
         assertEquals(expectedValue, response);
@@ -224,7 +228,7 @@ public class KioskHttpClientTest {
 
         // successful response
         String expectedValue = "newJobHash";
-        String expectedResponse = String.format("{\"hash\": \"%s\"}", expectedValue);
+        String expectedResponse = g.toJson(new CreateJobResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskHttpClient.createJob(imageName, uploadedName, jobType);
         assertEquals(expectedValue, response);
