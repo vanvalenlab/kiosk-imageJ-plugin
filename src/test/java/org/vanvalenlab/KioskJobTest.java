@@ -55,7 +55,6 @@ public class KioskJobTest {
         String nextStatus = "testing";
         response = g.toJson(new GetStatusResponse(nextStatus));
         server.enqueue(new MockResponse().setBody(response));
-        System.out.println(response);
         kioskJob.updateStatus();
         assertEquals(nextStatus, kioskJob.getStatus());
         assertEquals(false, kioskJob.hasFinalStatus());

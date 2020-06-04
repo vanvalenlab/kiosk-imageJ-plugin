@@ -78,10 +78,10 @@ public class ZipFileManager extends KioskJobManager implements PlugIn {
      * 6. Update or retrieve expiration status.
      */
     public void run(String arg) {
-        String file = ZipFileManager.selectDirectory();
-
-        // Try to zip the file.
         try {
+            String file = ZipFileManager.selectDirectory();
+
+            // Try to zip the file.
             int index = file.lastIndexOf("\\");
             if (index != -1) {
                 FileOutputStream fos = new FileOutputStream(file + ".zip");
@@ -93,29 +93,28 @@ public class ZipFileManager extends KioskJobManager implements PlugIn {
                 IJ.log(needsZipping.getName());
                 file = file + ".zip";
             }
-        }
-        catch(IOException ex) {
-            IJ.log(String.format("Unable to zip due to %s!", ex));
-            IJ.handleException(ex);
-        }
 
-        if (file == null) {
-            IJ.showMessage("Error!", "Something went wrong");
-        }
-        else {
-            // show options menu (including hostname)
-            Map<String, Object> options = this.configureOptions();
-            if (null == options) {
-                return;
+            if (file == null) {
+                IJ.showMessage("Error!", "Something went wrong");
             }
+            else {
+                // show options menu (including hostname)
+                Map<String, Object> options = this.configureOptions();
+                if (null == options) {
+                    return;
+                }
 
-            final String host = (String)options.get(Constants.KIOSK_HOST);
+                final String host = (String)options.get(Constants.KIOSK_HOST);
 
-            // User chooses job type
-            String jobType = ImageJobManager.selectJobType(host);
+                // User chooses job type
+                String jobType = ImageJobManager.selectJobType(host);
 
-            // Run the job
-            ImageJobManager.runJob(jobType, file, options);
+                // Run the job
+                ImageJobManager.runJob(jobType, file, options);
+            }
+        }
+        catch (Exception e) {
+            IJ.handleException(e);
         }
     }
 }
