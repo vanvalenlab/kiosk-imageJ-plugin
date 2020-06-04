@@ -1,6 +1,7 @@
 package org.vanvalenlab;
 
 import ij.IJ;
+import ij.io.DirectoryChooser;
 import ij.plugin.PlugIn;
 
 import javax.swing.*;
@@ -15,30 +16,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipFileManager extends KioskJobManager implements PlugIn {
-
-    /**
-     * selectDirectory displays a file explorer, which
-     * will let you select a specific
-     * directory which hopefully contains the batch of
-     * images needed to process.
-     *  @return the absolute path of the selected file or null if
-     *  a file is not selected
-     */
-    public static String selectDirectory() {
-        final List<String> extensions = Arrays.asList("jpg", "png", "gif", ".tif", ".tiff");
-        JFileChooser picker = new JFileChooser();
-        picker.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
-        // Open the file explorer at user.home
-        picker.setCurrentDirectory(new File(System.getProperty("user.home")));
-        int result = picker.showOpenDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // If a directory is selected, we want to return its path.
-            File selectedFile = picker.getSelectedFile();
-            IJ.log(String.format("Selected file: %s", selectedFile.getAbsolutePath()));
-            return selectedFile.getAbsolutePath();
-        }
-        return null;
-    }
 
     /**
      *  zipFile recursively zips files, through nested directories.
@@ -79,39 +56,35 @@ public class ZipFileManager extends KioskJobManager implements PlugIn {
      */
     public void run(String arg) {
         try {
-            String file = ZipFileManager.selectDirectory();
+            String filePath = IJ.getDirectory("default");
+//            File[] allFiles = new File(filePath).listFiles();
 
             // Try to zip the file.
-            int index = file.lastIndexOf("\\");
+            int index = filePath.lastIndexOf("\\");
             if (index != -1) {
-                FileOutputStream fos = new FileOutputStream(file + ".zip");
+                FileOutputStream fos = new FileOutputStream(filePath + ".zip");
                 ZipOutputStream zipped = new ZipOutputStream(fos);
-                File needsZipping = new File(file);
+                File needsZipping = new File(filePath);
                 zipFile(needsZipping, needsZipping.getName(), zipped);
                 zipped.close();
                 fos.close();
                 IJ.log(needsZipping.getName());
-                file = file + ".zip";
+                filePath = filePath + ".zip";
             }
 
-            if (file == null) {
-                IJ.showMessage("Error!", "Something went wrong");
-            }
-            else {
-                // show options menu (including hostname)
-                Map<String, Object> options = this.configureOptions();
-                if (null == options) {
-                    return;
-                }
+            if (filePath == null) return;
 
-                final String host = (String)options.get(Constants.KIOSK_HOST);
+            // show options menu (including hostname)
+            Map<String, Object> options = this.configureOptions();
+            if (null == options) return;
 
-                // User chooses job type
-                String jobType = ImageJobManager.selectJobType(host);
+            final String host = (String)options.get(Constants.KIOSK_HOST);
 
-                // Run the job
-                ImageJobManager.runJob(jobType, file, options);
-            }
+            // User chooses job type
+            String jobType = ImageJobManager.selectJobType(host);
+
+            // Run the job
+            ImageJobManager.runJob(jobType, filePath, options);
         }
         catch (Exception e) {
             IJ.handleException(e);
