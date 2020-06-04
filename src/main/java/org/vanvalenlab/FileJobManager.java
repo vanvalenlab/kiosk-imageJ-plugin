@@ -3,6 +3,7 @@ package org.vanvalenlab;
 import ij.IJ;
 import ij.plugin.PlugIn;
 
+import java.io.File;
 import java.util.Map;
 
 public class FileJobManager extends KioskJobManager implements PlugIn {
@@ -10,7 +11,7 @@ public class FileJobManager extends KioskJobManager implements PlugIn {
     public void run(String arg) {
         try {
             // Select the image file.
-            String filePath = IJ.getFilePath(Constants.SELECT_FILE_MESSAGE);
+            final String filePath = IJ.getFilePath(Constants.SELECT_FILE_MESSAGE);
             if (filePath == null) return;
 
             // show options menu (including hostname)
@@ -27,6 +28,8 @@ public class FileJobManager extends KioskJobManager implements PlugIn {
         }
         catch (Exception e) {
             IJ.handleException(e);
+            IJ.showProgress(1.0);
+            IJ.showStatus("DeepCell Kiosk Job Failed.");
         }
     }
 }

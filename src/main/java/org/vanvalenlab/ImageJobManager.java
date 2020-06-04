@@ -35,6 +35,8 @@ public class ImageJobManager extends KioskJobManager implements PlugIn {
             ImageJobManager.runJob(jobType, filePath, options);
         } catch (Exception e) {
             IJ.handleException(e);
+            IJ.showProgress(1.0);
+            IJ.showStatus("DeepCell Kiosk Job Failed.");
         }
     }
 }
