@@ -5,7 +5,7 @@ import ij.plugin.PlugIn;
 
 import java.util.Map;
 
-public class SingleFileJobManager extends KioskJobManager implements PlugIn {
+public class FileJobManager extends KioskJobManager implements PlugIn {
 
     public void run(String arg) {
         try {
