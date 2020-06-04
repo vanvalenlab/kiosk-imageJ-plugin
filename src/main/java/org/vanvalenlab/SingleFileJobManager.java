@@ -1,7 +1,6 @@
 package org.vanvalenlab;
 
 import ij.IJ;
-import ij.io.OpenDialog;
 import ij.plugin.PlugIn;
 
 import java.util.Map;
@@ -11,8 +10,7 @@ public class SingleFileJobManager extends KioskJobManager implements PlugIn {
     public void run(String arg) {
         try {
             // Select the image file.
-            final OpenDialog od = new OpenDialog(Constants.SELECT_FILE_MESSAGE);
-            final String filePath = od.getPath();
+            String filePath = IJ.getFilePath(Constants.SELECT_FILE_MESSAGE);
             if (filePath == null) {
                 return;
             }
