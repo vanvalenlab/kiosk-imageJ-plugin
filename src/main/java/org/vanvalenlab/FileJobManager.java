@@ -3,8 +3,9 @@ package org.vanvalenlab;
 import ij.IJ;
 import ij.plugin.PlugIn;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.Tika;
 
-import javax.activation.MimetypesFileTypeMap;
+import java.io.File;
 import java.util.Map;
 
 public class FileJobManager extends KioskJobManager implements PlugIn {
@@ -17,7 +18,7 @@ public class FileJobManager extends KioskJobManager implements PlugIn {
 
             // TODO: support uploading directories and zip files.
             // First version of zip file support: https://tinyurl.com/ycxlp29r
-            String mimeType = new MimetypesFileTypeMap().getContentType(filePath);
+            String mimeType = new Tika().detect(new File(filePath));
             if (!mimeType.substring(0, 5).equalsIgnoreCase("image")) {
                 final String ext = FilenameUtils.getExtension(filePath);
                 IJ.showMessage(String.format("Only image files are valid, got %s file.", ext));
