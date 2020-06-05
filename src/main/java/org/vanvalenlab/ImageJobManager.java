@@ -35,6 +35,7 @@ public class ImageJobManager extends KioskJobManager implements PlugIn {
             ImageJobManager.runJob(jobType, filePath, options);
         } catch (Exception e) {
             IJ.handleException(e);
+            IJ.showStatus(Constants.FAIL_MESSAGE);
         }
     }
 }

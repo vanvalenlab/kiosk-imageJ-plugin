@@ -38,6 +38,7 @@ public class FileJobManager extends KioskJobManager implements PlugIn {
         }
         catch (Exception e) {
             IJ.handleException(e);
+            IJ.showStatus(Constants.FAIL_MESSAGE);
         }
     }
 }

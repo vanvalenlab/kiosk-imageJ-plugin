@@ -19,6 +19,7 @@ public final class Constants {
     static final String SELECT_FILE_MESSAGE = "Select the file to submit to the DeepCell Kiosk";
     static final String SELECT_JOB_TITLE = "Select a Job Type";
     static final String SUCCESS_MESSAGE = "DeepCell Kiosk Job Complete!";
+    static final String FAIL_MESSAGE = "DeepCell Kiosk Job Failed!";
     static final String OPTIONS_MENU_TITLE = "Configuration";
     static final String JOB_SELECT_MENU_TITLE = "Job Setup";
 
