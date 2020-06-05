@@ -88,7 +88,6 @@ public class ZipFileManager extends KioskJobManager implements PlugIn {
         }
         catch (Exception e) {
             IJ.handleException(e);
-            IJ.showStatus("DeepCell Kiosk Job Failed.");
         }
     }
 }
