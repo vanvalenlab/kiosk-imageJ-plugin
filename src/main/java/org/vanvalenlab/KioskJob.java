@@ -2,6 +2,7 @@ package org.vanvalenlab;
 
 import ij.IJ;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -82,14 +83,15 @@ public class KioskJob {
     // START: HTTP API wrapper methods
     /**
      * Create the DeepCell Kiosk job.
-     * @param imageName The path of the image to process
+     * @param imageFilePath The path of the image to process
      * @throws IOException
      */
-    public void create(String imageName) throws IOException {
-        String uploadPath = this.kioskClient.uploadFile(imageName);
+    public void create(String imageFilePath) throws IOException {
+        String uploadPath = this.kioskClient.uploadFile(imageFilePath);
         if (null == uploadPath) {
-            throw new IOException(String.format("Failed to upload %s", imageName));
+            throw new IOException(String.format("Failed to upload %s", imageFilePath));
         }
+        String imageName = (new File(imageFilePath)).getName();
         String jobHash = this.kioskClient.createJob(imageName, uploadPath, this.jobType);
         this.jobHash = jobHash;
     }
