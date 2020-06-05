@@ -4,7 +4,11 @@ import ij.IJ;
 import ij.plugin.PlugIn;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class FileJobManager extends KioskJobManager implements PlugIn {
 
@@ -27,8 +31,6 @@ public class FileJobManager extends KioskJobManager implements PlugIn {
             ImageJobManager.runJob(jobType, filePath, options);
         }
         catch (Exception e) {
-            IJ.handleException(e);
-            IJ.showProgress(1.0);
             IJ.showStatus("DeepCell Kiosk Job Failed.");
         }
     }
