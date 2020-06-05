@@ -65,9 +65,9 @@ public class KioskJob {
                 }
             }
             if (isNewStatus) {
-                int i = Arrays.asList(Constants.ALL_JOB_STATUSES).indexOf(currentStatus);
-                IJ.showProgress(i, Constants.ALL_JOB_STATUSES.length);
-                IJ.showStatus("DeepCell Kiosk Job Status: " + currentStatus);
+                double progress = Constants.JOB_STATUSES.getOrDefault(currentStatus, 0.0);
+                IJ.showProgress(progress);
+                IJ.showStatus(String.format("DeepCell Kiosk Job Status: %s", currentStatus));
             }
             // wait to prevent excessive requests
             try {

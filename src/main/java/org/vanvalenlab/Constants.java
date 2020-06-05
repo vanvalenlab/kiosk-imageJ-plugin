@@ -26,16 +26,19 @@ public final class Constants {
     // Job statuses
     static final String SUCCESS_STATUS = "done";
     static final String FAILED_STATUS = "failed";
-    // Array of job statuses used to evaluate progress
-    static final String[] ALL_JOB_STATUSES = {
-            null,
-            "new",
-            "started",
-            "pre-processing",
-            "predicting",
-            "post-processing",
-            "saving-results",
-            "done"
+    // Map of job statuses and their progress value.
+    static final Map<String, Double> JOB_STATUSES = new LinkedHashMap<String, Double>() {
+        {
+            put(null, 0.0);
+            put("new", 0.0);
+            put("started", 0.1);
+            put("pre-processing", 0.2);
+            put("predicting", 0.33);
+            put("post-processing", 0.67);
+            put("saving-results", 0.8);
+            put("done", 1.0);
+            put("failed", 1.0);
+        }
     };
 
     // Configuration keys
