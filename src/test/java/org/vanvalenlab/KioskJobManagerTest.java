@@ -1,6 +1,7 @@
 package org.vanvalenlab;
 
 import com.google.gson.Gson;
+import ij.ImagePlus;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -8,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.vanvalenlab.exceptions.KioskJobFailedException;
 import org.vanvalenlab.responses.*;
@@ -15,6 +17,7 @@ import org.vanvalenlab.responses.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -46,6 +49,24 @@ public class KioskJobManagerTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void testGetFilePath() throws IOException {
+        BufferedImage img = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+        ImagePlus imp = new ImagePlus("test.tiff", img);
+
+        // image is not saved, so it will return a temporary file path.
+        String filePath = KioskJobManager.getFilePath(imp);
+
+        // load a new image from the same file path.
+        ImagePlus newImp = new ImagePlus(filePath);
+
+        String newPath = KioskJobManager.getFilePath(newImp);
+        assert (newPath.equals(filePath));
+    }
 
     @Test
     public void testConfigureOptions() {

@@ -2,12 +2,8 @@ package org.vanvalenlab;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.io.FileInfo;
 import ij.plugin.PlugIn;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 public class ImageJobManager extends KioskJobManager implements PlugIn {
@@ -21,22 +17,8 @@ public class ImageJobManager extends KioskJobManager implements PlugIn {
                 return;
             }
 
-            String filePath;
-            FileInfo fileInfo = imp.getOriginalFileInfo();
+            String filePath = ImageJobManager.getFilePath(imp);
 
-            if (null == fileInfo) {
-                Path tmpDir = Files.createTempDirectory("DeepCell_Kiosk");
-                // image is in memory. save file as temporary tiff file.
-
-                filePath = Paths.get(tmpDir.toString(), imp.getTitle()).toString();
-                boolean success = IJ.saveAsTiff(imp, filePath);
-                if (!success) {
-                    IJ.showMessage("Could not save active image as tiff file for upload.");
-                    return;
-                }
-            } else {
-                filePath = String.format("%s%s", fileInfo.directory, fileInfo.fileName);
-            }
             // show options menu (including hostname)
             Map<String, Object> options = this.configureOptions();
             if (null == options) return;

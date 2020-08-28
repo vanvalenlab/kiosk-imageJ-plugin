@@ -1,5 +1,6 @@
 package org.vanvalenlab;
 
+import ij.io.FileInfo;
 import org.vanvalenlab.exceptions.KioskJobFailedException;
 
 import ij.IJ;
@@ -8,6 +9,9 @@ import ij.gui.GenericDialog;
 import ij.io.Opener;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -92,6 +96,29 @@ public class KioskJobManager {
         options.put(Constants.EXPIRE_TIME_SECONDS, (int)gd.getNextNumber());
 
         return options;
+    }
+
+    /**
+     * Get the file path of the image. Saves a temporary file if necessary.
+     * @param imp An IJ ImagePlus object that may need to be saved.
+     * @return The full file path of the image, as a String.
+     */
+    public static String getFilePath(ImagePlus imp) throws IOException {
+        String filePath;
+        FileInfo fileInfo = imp.getOriginalFileInfo();
+
+        if (null == fileInfo) {
+            Path tmpDir = Files.createTempDirectory("DeepCell_Kiosk");
+            // image is in memory. save file as temporary tiff file.
+            filePath = Paths.get(tmpDir.toString(), imp.getTitle()).toString();
+            boolean success = IJ.saveAsTiff(imp, filePath);
+            if (!success) {
+                throw new IOException("Could not save active image as tiff file for upload.");
+            }
+        } else {
+            filePath = String.format("%s%s", fileInfo.directory, fileInfo.fileName);
+        }
+        return filePath;
     }
 
     /**
