@@ -38,6 +38,35 @@ public class LabelROIConverter implements PlugIn {
         return roi;
     }
 
+    private static void createLabelOverlay(ImagePlus imp) {
+        final int wandMode = Wand.EIGHT_CONNECTED;
+        final RoiManager roiManager = new RoiManager(false);
+        final ImageProcessor ip = imp.getProcessor();
+
+        final int w = ip.getWidth();
+        final int h = ip.getHeight();
+        final ByteProcessor bpCompleted = new ByteProcessor(w, h);
+        bpCompleted.setValue(255);
+
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                if (bpCompleted.get(x, y) != 0) {
+                    continue; // Already added this to an ROI.
+                }
+                float val = ip.getf(x, y);
+                if (val > 0) {
+                    Wand wand = new Wand(ip);
+                    wand.autoOutline(x, y, val, val, wandMode);
+                    PolygonRoi roi = wandToRoi(wand);
+                    roiManager.add(imp, roi, (int) val);
+                    bpCompleted.fill(roi);
+                }
+            }
+        }
+        // Move the ROIs into an overlay.
+        roiManager.moveRoisToOverlay(imp);
+    }
+
     public void run(String arg) {
         try {
             // get active image
@@ -47,30 +76,7 @@ public class LabelROIConverter implements PlugIn {
                 return;
             }
 
-            final int wandMode = Wand.EIGHT_CONNECTED;
-            final RoiManager roiManager = new RoiManager();
-            final ImageProcessor ip = imp.getProcessor();
-
-            final int w = ip.getWidth();
-            final int h = ip.getHeight();
-            final ByteProcessor bpCompleted = new ByteProcessor(w, h);
-            bpCompleted.setValue(255);
-
-            for (int y = 0; y < h; y++) {
-                for (int x = 0; x < w; x++) {
-                    if (bpCompleted.get(x, y) != 0) {
-                        continue; // Already added this to an ROI.
-                    }
-                    float val = ip.getf(x, y);
-                    if (val > 0) {
-                        Wand wand = new Wand(ip);
-                        wand.autoOutline(x, y, val, val, wandMode);
-                        PolygonRoi roi = wandToRoi(wand);
-                        roiManager.addRoi(roi);
-                        bpCompleted.fill(roi);
-                    }
-                }
-            }
+            createLabelOverlay(imp);
         } catch (Exception e) {
             IJ.showStatus("Could not create ROIs from label image.");
             IJ.handleException(e);
