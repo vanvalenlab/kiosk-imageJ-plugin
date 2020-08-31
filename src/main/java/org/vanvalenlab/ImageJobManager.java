@@ -2,7 +2,6 @@ package org.vanvalenlab;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.io.FileInfo;
 import ij.plugin.PlugIn;
 
 import java.util.Map;
@@ -18,8 +17,7 @@ public class ImageJobManager extends KioskJobManager implements PlugIn {
                 return;
             }
 
-            FileInfo fileInfo = imp.getOriginalFileInfo();
-            String filePath = String.format("%s%s", fileInfo.directory, fileInfo.fileName);
+            String filePath = ImageJobManager.getFilePath(imp);
 
             // show options menu (including hostname)
             Map<String, Object> options = this.configureOptions();
