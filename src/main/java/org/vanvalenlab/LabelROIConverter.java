@@ -20,7 +20,7 @@ public class LabelROIConverter implements PlugIn {
      * @param wand
      * @return
      */
-    private static PolygonRoi wandToRoi(Wand wand) {
+    static PolygonRoi wandToRoi(Wand wand) {
         PolygonRoi roi;
 
         // The Wand can have far too many points (1000, when fewer are needed)
@@ -38,7 +38,7 @@ public class LabelROIConverter implements PlugIn {
         return roi;
     }
 
-    private static void createLabelOverlay(ImagePlus imp) {
+    static void createLabelOverlay(ImagePlus imp) {
         final int wandMode = Wand.EIGHT_CONNECTED;
         final RoiManager roiManager = new RoiManager(false);
         final ImageProcessor ip = imp.getProcessor();
