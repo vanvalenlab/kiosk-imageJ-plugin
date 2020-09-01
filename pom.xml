@@ -13,7 +13,7 @@
 
   <groupId>com.vanvalenlab</groupId>
   <artifactId>Kiosk_ImageJ</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <packaging>jar</packaging>
 
   <name>DeepCell Kiosk ImageJ Plugin</name>
@@ -42,6 +42,8 @@
     <imagej.version>1.53a</imagej.version>
     <junit.version>4.12</junit.version>
     <junit.jupiter.version>5.6.2</junit.jupiter.version>
+    <tika.version>1.24.1</tika.version>
+    <commons.io.version>2.7</commons.io.version>
   </properties>
 
   <dependencies>
@@ -71,14 +73,14 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.7</version>
+      <version>${commons.io.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
-      <version>1.24.1</version>
+      <version>${tika.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/junit/junit -->
