@@ -22,3 +22,14 @@ The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images wi
 4. Select the job type ("segmentation" is default). Please make sure your image is appropriate for the job.
 5. Click OK to run the job.
 6. Await your results! They should be automatically downloaded and opened.
+
+## QuPath Integration
+
+[QuPath supports ImageJ](https://qupath.readthedocs.io/en/latest/docs/advanced/imagej.html) and this plugin can be used within the QuPath's internal ImageJ instance.
+
+1. [Configure the QuPath's ImageJ plugin directory.](https://qupath.readthedocs.io/en/latest/docs/advanced/imagej.html#accessing-imagej-plugins)
+2. Open the image to process in QuPath.
+3. Send the image to ImageJ (Extensions/ImageJ/Send region to ImageJ).
+4. Process the image normally.
+5. Only overlays and ROIs can be sent back to QuPath. Create an Overlay from the resulting label image (Plugins/DeepCell Kiosk/Create Label Overlay).
+6. Send the resulting overlay back to QuPath (Plugins/Send Overlay to QuPath).
