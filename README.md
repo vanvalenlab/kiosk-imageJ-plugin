@@ -27,7 +27,7 @@ The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images wi
 
 [QuPath supports ImageJ](https://qupath.readthedocs.io/en/latest/docs/advanced/imagej.html) and this plugin can be used within the QuPath's internal ImageJ instance.
 
-1. [Configure the QuPath's ImageJ plugin directory.](https://qupath.readthedocs.io/en/latest/docs/advanced/imagej.html#accessing-imagej-plugins)
+1. Configure the QuPath's [ImageJ plugin directory.](https://qupath.readthedocs.io/en/latest/docs/advanced/imagej.html#accessing-imagej-plugins)
 2. Open the image to process in QuPath.
 3. Send the image to ImageJ (Extensions/ImageJ/Send region to ImageJ).
 4. Process the image normally.
