@@ -13,7 +13,7 @@
 
   <groupId>com.vanvalenlab</groupId>
   <artifactId>Kiosk_ImageJ</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <packaging>jar</packaging>
 
   <name>DeepCell Kiosk ImageJ Plugin</name>
