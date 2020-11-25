@@ -107,10 +107,18 @@ public class KioskJobManager {
         String filePath;
         FileInfo fileInfo = imp.getOriginalFileInfo();
 
-        if (null == fileInfo) {
+        if (null == fileInfo || fileInfo.fileName.length() == 0) {
             Path tmpDir = Files.createTempDirectory("DeepCell_Kiosk");
             // image is in memory. save file as temporary tiff file.
-            filePath = Paths.get(tmpDir.toString(), imp.getTitle()).toString();
+            String name = imp.getTitle();
+
+            // make sure the saved file saves with a .tif extension.
+            // If using the title it is possible the .tif gets dropped
+            // and the file is not found.
+            if (!(name.endsWith(".tif") || name.endsWith(".tiff"))) {
+                name = name + ".tif";
+            }
+            filePath = Paths.get(tmpDir.toString(), name).toString();
             boolean success = IJ.saveAsTiff(imp, filePath);
             if (!success) {
                 throw new IOException("Could not save active image as tiff file for upload.");
