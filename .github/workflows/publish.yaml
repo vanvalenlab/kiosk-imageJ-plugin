@@ -21,7 +21,10 @@ jobs:
       - name: Setup headless environment
         run: |
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-      
+
+      - name: Build with Maven
+        run: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
       - name: Set the upload asset name
         id: jar_name
         run: echo "::set-output name=jar::$(mvn -B -q -Dexec.executable=echo -Dexec.args='${project.artifactId}-${project.version}' --non-recursive exec:exec 2>/dev/null)"
