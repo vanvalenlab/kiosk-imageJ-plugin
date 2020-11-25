@@ -34,3 +34,4 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./target/${{ steps.jar_name.outputs.jar }}-${{ github.event.release.tag_name }}.jar
           asset_name: ${{ steps.jar_name.outputs.jar }}-${{ github.event.release.tag_name }}.jar
+          asset_content_type: application/java-archive
