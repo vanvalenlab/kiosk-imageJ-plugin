@@ -21,8 +21,16 @@ jobs:
       - name: Setup headless environment
         run: |
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+      
+      - name: Set the upload asset name
+        run: |
+          NAME="$(mvn -B -q -Dexec.executable=echo -Dexec.args='${project.artifactId}-${project.version}' --non-recursive exec:exec 2>/dev/null)"
+          echo '::set-env name=NAME::$NAME'
 
-      - name: Publish package
-        run: mvn -B deploy
+      - name: Upload to release
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.release.upload_url }}
+          asset_path: ./target/${{ env.NAME }}-${{ github.event.release.tag_name }}.jar
