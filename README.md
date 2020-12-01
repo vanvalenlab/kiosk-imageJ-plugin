@@ -24,9 +24,11 @@ The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images wi
 
 ![image](resources/step_2_screenshot.png) 
 
-3. Update custom options (especially the DeepCell Kiosk Host to your own Kiosk IP address).
+3. If you're running one of our pretrained models, please make sure the settings all match the screenshot below. If you're running your own Kiosk, make sure to update the IP address for your custom instance. 
+
 
 ![image](resources/step_3_screenshot.png) 
+
 
 4. Select which model you wish to run ("multiplex" is default). Please see our [documentation](link once master is merged in) for data requirements for the different model types. 
 
