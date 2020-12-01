@@ -17,9 +17,21 @@ The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images wi
 ## How to Run the plugin
 
 1. Open an image in ImageJ.
-2. Navigate to Plugins > DeepCell Kiosk > Submit Active Image.
+
+![image](resources/step_1_screenshot.png) 
+
+2. Navigate to Plugins > DeepCell Kiosk > Submit Active Image.  
+
+![image](resources/step_2_screenshot.png) 
+
 3. Update custom options (especially the DeepCell Kiosk Host to your own Kiosk IP address).
-4. Select the job type ("segmentation" is default). Please make sure your image is appropriate for the job.
+
+![image](resources/step_3_screenshot.png) 
+
+4. Select which model you wish to run ("multiplex" is default). Please see our [documentation](link once master is merged in) for data requirements for the different model types. 
+
+![image](resources/step_4_screenshot.png) 
+
 5. Click OK to run the job.
 6. Await your results! They should be automatically downloaded and opened.
 
