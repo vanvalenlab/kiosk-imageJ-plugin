@@ -12,7 +12,7 @@ The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images wi
 2. Open ImageJ.
 3. Navigate to Plugins > Install...
 4. Select the downloaded JAR file.
-5. Install it into the `jars` directory.
+5. Install it into the `plugins` folder.
 
 ## How to Run the plugin
 
