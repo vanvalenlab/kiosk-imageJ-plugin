@@ -28,7 +28,7 @@ The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images wi
 
 ![image](resources/step_3_screenshot.png) 
 
-4. Select which model you wish to run ("multiplex" is default). Please see our [documentation](link once master is merged in) for data requirements for the different model types. 
+4. Select which model you wish to run ("multiplex" is the default). Please see our [documentation](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/deepcell_dot_org#formatting-data-for-web-based-models) for data requirements for the different model types. 
 
 ![image](resources/step_4_screenshot.png) 
 
