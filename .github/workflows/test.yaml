@@ -40,4 +40,10 @@ jobs:
 
       - name: Test with Maven
         run: |
+          mvn clean test
+
+      - name: Coveralls
+        if: env.COVERALLS_REPO_TOKEN != null
+        run: |
           mvn test jacoco:report coveralls:report -B -D repoToken=${{ secrets.COVERALLS_REPO_TOKEN }}
+
