@@ -36,11 +36,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            mvn install -DskipTests=true `-Dmaven`.javadoc`.skip=true -B -V
-          else
-            mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-          fi
+          mvn install -DskipTests=true -B -V
 
       - name: Test with Maven
         run: |
