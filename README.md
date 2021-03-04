@@ -6,6 +6,8 @@
 
 The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images with an existing DeepCell Kiosk from within ImageJ.
 
+Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepcell) for an overview of the DeepCell ecosystem.
+
 ## How to install
 
 1. Download the [latest JAR file](https://github.com/vanvalenlab/kiosk-imageJ-plugin/releases/download/0.3.2/Kiosk_ImageJ-0.3.2.jar).
@@ -28,7 +30,7 @@ The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images wi
 
 ![image](resources/step_3_screenshot.png) 
 
-4. Select which model you wish to run ("multiplex" is the default). Please see our [documentation](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/deepcell_dot_org#formatting-data-for-web-based-models) for data requirements for the different model types. 
+4. Select which model you wish to run ("mesmer" is the default). Please see our [documentation](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#formatting-data-for-pre-trained-models) for data requirements for the different model types. 
 
 ![image](resources/step_4_screenshot.png) 
 
