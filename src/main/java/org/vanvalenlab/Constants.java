@@ -15,6 +15,9 @@ public final class Constants {
     static final MediaType MEDIA_TYPE_JSON = MediaType.get("application/json; charset=utf-8");
     static final MediaType MEDIA_TYPE_FORM_DATA = MediaType.get("multipart/form-data; charset=utf-8");
 
+    // Retry failed HTTP requests
+    static final int MAX_HTTP_RETRIES = 3;
+
     // GUI prompts / messages
     static final String SELECT_FILE_MESSAGE = "Select the file to submit to the DeepCell Kiosk";
     static final String SELECT_JOB_TITLE = "Select a Job Type";

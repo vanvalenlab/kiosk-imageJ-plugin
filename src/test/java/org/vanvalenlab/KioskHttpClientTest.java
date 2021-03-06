@@ -47,8 +47,8 @@ public class KioskHttpClientTest {
     @Test
     public void testSendHttpRequest() throws IOException {
         Request request = new Request.Builder()
-                .url(baseUrl)
-                .build();
+            .url(baseUrl)
+            .build();
 
         // successful response
         String expectedResponse = "Success!";
@@ -57,9 +57,11 @@ public class KioskHttpClientTest {
         assertEquals(response, expectedResponse);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskHttpClient.sendHttpRequest(request)
+            kioskHttpClient.sendHttpRequest(request)
         );
     }
 
@@ -81,15 +83,17 @@ public class KioskHttpClientTest {
         assertEquals(null, response);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskHttpClient.getRedisValue(redisHash, redisKey)
+            kioskHttpClient.getRedisValue(redisHash, redisKey)
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskHttpClient.getRedisValue(redisHash, redisKey)
+            kioskHttpClient.getRedisValue(redisHash, redisKey)
         );
     }
 
@@ -102,7 +106,7 @@ public class KioskHttpClientTest {
         String expectedValue = "uploadedFilePath.jpg";
         String expectedURL = "http://test.com/uploadedFilePath.jpg";
         String expectedResponse = g.toJson(
-                new UploadFileResponse(expectedValue, expectedURL));
+            new UploadFileResponse(expectedValue, expectedURL));
 
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskHttpClient.uploadFile(filePath);
@@ -114,22 +118,24 @@ public class KioskHttpClientTest {
         assertEquals(null, response);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskHttpClient.uploadFile(filePath)
+            kioskHttpClient.uploadFile(filePath)
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskHttpClient.uploadFile(filePath)
+            kioskHttpClient.uploadFile(filePath)
         );
 
         // test local file does not exist.
         String invalidFilePath = String.format(
-                "%s%s", folder.getRoot().getAbsolutePath(), "invalid.jpg");
+            "%s%s", folder.getRoot().getAbsolutePath(), "invalid.jpg");
         assertThrows(IOException.class, () ->
-                kioskHttpClient.uploadFile(invalidFilePath)
+            kioskHttpClient.uploadFile(invalidFilePath)
         );
     }
 
@@ -151,15 +157,17 @@ public class KioskHttpClientTest {
         assertEquals(0, response); // primitive int defaults to 0.
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskHttpClient.expireRedisHash(redisHash, expireTime)
+            kioskHttpClient.expireRedisHash(redisHash, expireTime)
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskHttpClient.expireRedisHash(redisHash, expireTime)
+            kioskHttpClient.expireRedisHash(redisHash, expireTime)
         );
     }
 
@@ -179,15 +187,17 @@ public class KioskHttpClientTest {
         assertArrayEquals(response, null);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskHttpClient.getJobTypes()
+            kioskHttpClient.getJobTypes()
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskHttpClient.getJobTypes()
+            kioskHttpClient.getJobTypes()
         );
     }
 
@@ -208,15 +218,17 @@ public class KioskHttpClientTest {
         assertEquals(null, response);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskHttpClient.getStatus(redisHash)
+            kioskHttpClient.getStatus(redisHash)
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskHttpClient.getStatus(redisHash)
+            kioskHttpClient.getStatus(redisHash)
         );
     }
 
@@ -239,15 +251,17 @@ public class KioskHttpClientTest {
         assertEquals(null, response);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskHttpClient.createJob(imageName, uploadedName, jobType)
+            kioskHttpClient.createJob(imageName, uploadedName, jobType)
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskHttpClient.createJob(imageName, uploadedName, jobType)
+            kioskHttpClient.createJob(imageName, uploadedName, jobType)
         );
     }
 

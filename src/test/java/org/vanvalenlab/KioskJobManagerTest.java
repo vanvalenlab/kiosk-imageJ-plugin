@@ -85,28 +85,32 @@ public class KioskJobManagerTest {
         robot.setAutoWaitForIdle(true);
 
         // test successful request
-//        server.enqueue(new MockResponse().setBody(responseStr));
-//        executor.submit(() -> {
-//            System.out.println("First robot delay");
-//            robot.delay(100);
-//            System.out.println("About to push key");
-//            robot.keyPress(InputEvent.BUTTON1_DOWN_MASK);
-//            System.out.println("key has been pressed");
-//        });
-//        jobType = KioskJobManager.selectJobType(baseUrl.toString());
-//        System.out.println("jobType");
-//        assertEquals(expectedJobType, jobType);
+        // server.enqueue(new MockResponse().setBody(responseStr));
+        // executor.submit(() -> {
+        //     System.out.println("First robot delay");
+        //     robot.delay(100);
+        //     System.out.println("About to push key");
+        //     robot.keyPress(InputEvent.BUTTON1_DOWN_MASK);
+        //     System.out.println("key has been pressed");
+        // });
+        // jobType = KioskJobManager.selectJobType(baseUrl.toString());
+        // System.out.println("jobType");
+        // assertEquals(expectedJobType, jobType);
 
         // test failed http request
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("{}"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("{}"));
+        }
         assertThrows(IOException.class, () ->
-                KioskJobManager.selectJobType(baseUrl.toString())
+            KioskJobManager.selectJobType(baseUrl.toString())
         );
 
         // test empty json body
-        server.enqueue(new MockResponse().setBody("{}"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("{}"));
+        }
         assertThrows(IOException.class, () ->
-                KioskJobManager.selectJobType(baseUrl.toString())
+            KioskJobManager.selectJobType(baseUrl.toString())
         );
     }
 
@@ -125,7 +129,7 @@ public class KioskJobManagerTest {
         defaults.put(Constants.EXPIRE_TIME_SECONDS, expireTime);
 
         String uploadResponse = g.toJson(new UploadFileResponse(
-                "uploadedName", "imageURL"));
+            "uploadedName", "imageURL"));
         String createResponse = g.toJson(new CreateJobResponse("hash"));
         String successStatusResponse = g.toJson(new GetStatusResponse(Constants.SUCCESS_STATUS));
         String failStatusResponse = g.toJson(new GetStatusResponse(Constants.FAILED_STATUS));
@@ -161,14 +165,16 @@ public class KioskJobManagerTest {
 
         // fails due to failed status
         assertThrows(KioskJobFailedException.class, () ->
-                KioskJobManager.runJob(jobType, filePath, defaults)
+            KioskJobManager.runJob(jobType, filePath, defaults)
         );
 
         // job hits errors
         // bad HTTP response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("{}"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("{}"));
+        }
         assertThrows(IOException.class, () ->
-                KioskJobManager.runJob(jobType, filePath, defaults)
+            KioskJobManager.runJob(jobType, filePath, defaults)
         );
         // invalid file path.
         String invalidPath = folder.getRoot() + "nofile.jpg";

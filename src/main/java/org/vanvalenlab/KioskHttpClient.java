@@ -67,6 +67,7 @@ public class KioskHttpClient {
         builder.connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
+            .addInterceptor(new RetryInterceptor())
             .retryOnConnectionFailure(true);
         return builder.build();
     }
