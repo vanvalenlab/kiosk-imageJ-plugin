@@ -85,11 +85,11 @@ public class KioskJobTest {
         // 4 status updates, null -> testing -> testing -> done
         server.enqueue(new MockResponse().setBody("{}"));
         server.enqueue(new MockResponse().setBody(
-                g.toJson(new GetStatusResponse("testing"))));
+            g.toJson(new GetStatusResponse("testing"))));
         server.enqueue(new MockResponse().setBody(
-                g.toJson(new GetStatusResponse("testing"))));
+            g.toJson(new GetStatusResponse("testing"))));
         server.enqueue(new MockResponse().setBody(
-                g.toJson(new GetStatusResponse(expectedFinalStatus))));
+            g.toJson(new GetStatusResponse(expectedFinalStatus))));
 
         String finalStatus = kioskJob.waitForFinalStatus(updateInterval);
         assertEquals(expectedFinalStatus, finalStatus);
@@ -105,10 +105,10 @@ public class KioskJobTest {
         String expectedURL = "http://test.com/uploadedFilePath.jpg";
 
         String expectedUploadResponse = g.toJson(
-                new UploadFileResponse(expectedUploadPath, expectedURL));
+            new UploadFileResponse(expectedUploadPath, expectedURL));
         String expectedHash = "newJobHash";
         String expectedCreateResponse = g.toJson(
-                new CreateJobResponse(expectedHash));
+            new CreateJobResponse(expectedHash));
         server.enqueue(new MockResponse().setBody(expectedUploadResponse));
         server.enqueue(new MockResponse().setBody(expectedCreateResponse));
         kioskJob.create(filePath);
@@ -118,26 +118,28 @@ public class KioskJobTest {
         // upload failure: valid but empty JSON
         server.enqueue(new MockResponse().setBody("{}"));
         assertThrows(IOException.class, () ->
-                kioskJob.create(filePath)
+            kioskJob.create(filePath)
         );
 
         // upload failure: local file does not exist throws error.
         String invalidFilePath = String.format(
-                "%s%s", folder.getRoot().getAbsolutePath(), "invalid.jpg");
+            "%s%s", folder.getRoot().getAbsolutePath(), "invalid.jpg");
         assertThrows(IOException.class, () ->
-                kioskJob.create(invalidFilePath)
+            kioskJob.create(invalidFilePath)
         );
 
         // upload failure: error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskJob.create(filePath)
+            kioskJob.create(filePath)
         );
 
         // upload failure: invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskJob.create(filePath)
+            kioskJob.create(filePath)
         );
 
         // create failure: valid but empty JSON
@@ -148,16 +150,18 @@ public class KioskJobTest {
 
         // create failure: error response
         server.enqueue(new MockResponse().setBody(expectedUploadResponse));
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskJob.create(filePath)
+            kioskJob.create(filePath)
         );
 
         // create failure: invalid JSON but successful response
         server.enqueue(new MockResponse().setBody(expectedUploadResponse));
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskJob.create(filePath)
+            kioskJob.create(filePath)
         );
     }
 
@@ -176,25 +180,27 @@ public class KioskJobTest {
         // 0 response throws error, hash not found.
         server.enqueue(new MockResponse().setBody("{\"value\": 0}"));
         assertThrows(IOException.class, () ->
-                kioskJob.expire(expireTime)
+            kioskJob.expire(expireTime)
         );
 
         // valid but empty JSON
         server.enqueue(new MockResponse().setBody("{}"));
         assertThrows(IOException.class, () ->
-                kioskJob.expire(expireTime)
+            kioskJob.expire(expireTime)
         );
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskJob.expire(expireTime)
+            kioskJob.expire(expireTime)
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskJob.expire(expireTime)
+            kioskJob.expire(expireTime)
         );
     }
 
@@ -213,15 +219,17 @@ public class KioskJobTest {
         assertEquals(null, kioskJob.getStatus());
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskJob.updateStatus()
+            kioskJob.updateStatus()
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskJob.updateStatus()
+            kioskJob.updateStatus()
         );
     }
 
@@ -230,7 +238,7 @@ public class KioskJobTest {
         // successful response
         String expectedValue = "success!";
         String expectedResponse = g.toJson(
-                new GetRedisValueResponse(expectedValue));
+            new GetRedisValueResponse(expectedValue));
 
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskJob.getOutputPath();
@@ -242,15 +250,17 @@ public class KioskJobTest {
         assertEquals(null, response);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskJob.getOutputPath()
+            kioskJob.getOutputPath()
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskJob.getOutputPath()
+            kioskJob.getOutputPath()
         );
     }
 
@@ -259,7 +269,7 @@ public class KioskJobTest {
         // successful response
         String expectedValue = "success!";
         String expectedResponse = g.toJson(
-                new GetRedisValueResponse(expectedValue));
+            new GetRedisValueResponse(expectedValue));
         server.enqueue(new MockResponse().setBody(expectedResponse));
         String response = kioskJob.getErrorReason();
         assertEquals(expectedValue, response);
@@ -270,15 +280,17 @@ public class KioskJobTest {
         assertEquals(null, response);
 
         // error response
-        server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
+            server.enqueue(new MockResponse().setResponseCode(500).setBody("failed"));
+        }
         assertThrows(IOException.class, () ->
-                kioskJob.getErrorReason()
+            kioskJob.getErrorReason()
         );
 
         // invalid JSON but successful response
         server.enqueue(new MockResponse().setBody("failed"));
         assertThrows(JsonSyntaxException.class, () ->
-                kioskJob.getErrorReason()
+            kioskJob.getErrorReason()
         );
     }
 
