@@ -46,15 +46,14 @@ public class KioskJobManager {
 
         // radio button group for job selection
         gd.addRadioButtonGroup(
-                Constants.SELECT_JOB_TITLE,
-                jobTypes,
-                jobTypes.length,
-                1,
-                jobTypes[0]);
+            Constants.SELECT_JOB_TITLE,
+            jobTypes,
+            jobTypes.length,
+            1,
+            jobTypes[0]
+        );
 
-        System.out.println("About to show dialog");
         gd.showDialog();
-        System.out.println("Dialog shown");
         if (!gd.wasCanceled()) {
             jobType = gd.getNextRadioButton();
         }
@@ -77,15 +76,15 @@ public class KioskJobManager {
 
         // job status update interval
         gd.addNumericField(
-                Constants.UPDATE_STATUS_MILLISECONDS,
-                (int)Constants.getDefault(Constants.UPDATE_STATUS_MILLISECONDS),
-                0);
+            Constants.UPDATE_STATUS_MILLISECONDS,
+            (int)Constants.getDefault(Constants.UPDATE_STATUS_MILLISECONDS),
+            0);
 
         // job expiration time
         gd.addNumericField(
-                Constants.EXPIRE_TIME_SECONDS,
-                (int)Constants.getDefault(Constants.EXPIRE_TIME_SECONDS),
-                0);
+            Constants.EXPIRE_TIME_SECONDS,
+            (int)Constants.getDefault(Constants.EXPIRE_TIME_SECONDS),
+            0);
 
         gd.showDialog();
         if (gd.wasCanceled()) {
