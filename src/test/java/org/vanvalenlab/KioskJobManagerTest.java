@@ -69,8 +69,27 @@ public class KioskJobManagerTest {
     }
 
     @Test
-    public void testConfigureOptions() {
+    public void testConfigureOptions() throws AWTException {
+        // TODO: GUI window is not in focus so keyPress events are ignored.
+        // Map<String, Object> options;
 
+        // ExecutorService executor = Executors.newFixedThreadPool(2);
+        // final Robot robot = new Robot();
+        // robot.setAutoDelay(100);
+        // robot.setAutoWaitForIdle(true);
+
+        // executor.submit(() -> {
+        //     robot.delay(1000);
+        //     // Push Enter to confirm options.
+        //     robot.keyPress(KeyEvent.VK_ENTER);
+        //     robot.keyRelease(KeyEvent.VK_ENTER);
+        //     robot.delay(50);
+        // });
+        // options = KioskJobManager.configureOptions();
+        // assertEquals(
+        //     options.get(Constants.KIOSK_HOST),
+        //     Constants.getDefault(Constants.KIOSK_HOST)
+        // );
     }
 
     @Test
@@ -99,9 +118,10 @@ public class KioskJobManagerTest {
         );
 
         // test successful request
+        // TODO: GUI window is not in focus so keyPress events are ignored.
         // server.enqueue(new MockResponse().setBody(responseStr));
         // executor.submit(() -> {
-        //     robot.delay(1000);
+        //     robot.delay(500);
         //     // press tab twice to move to OK
         //     robot.keyPress(KeyEvent.VK_TAB);
         //     robot.keyRelease(KeyEvent.VK_TAB);
