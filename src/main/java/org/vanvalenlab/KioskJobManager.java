@@ -76,15 +76,15 @@ public class KioskJobManager {
 
         // job status update interval
         gd.addNumericField(
-                Constants.UPDATE_STATUS_MILLISECONDS,
-                (int)Constants.getDefault(Constants.UPDATE_STATUS_MILLISECONDS),
-                0);
+            Constants.UPDATE_STATUS_MILLISECONDS,
+            (int)Constants.getDefault(Constants.UPDATE_STATUS_MILLISECONDS),
+            0);
 
         // job expiration time
         gd.addNumericField(
-                Constants.EXPIRE_TIME_SECONDS,
-                (int)Constants.getDefault(Constants.EXPIRE_TIME_SECONDS),
-                0);
+            Constants.EXPIRE_TIME_SECONDS,
+            (int)Constants.getDefault(Constants.EXPIRE_TIME_SECONDS),
+            0);
 
         gd.showDialog();
         if (gd.wasCanceled()) {
