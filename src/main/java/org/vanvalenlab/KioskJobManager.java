@@ -46,15 +46,14 @@ public class KioskJobManager {
 
         // radio button group for job selection
         gd.addRadioButtonGroup(
-                Constants.SELECT_JOB_TITLE,
-                jobTypes,
-                jobTypes.length,
-                1,
-                jobTypes[0]);
+            Constants.SELECT_JOB_TITLE,
+            jobTypes,
+            jobTypes.length,
+            1,
+            jobTypes[0]
+        );
 
-        System.out.println("About to show dialog");
         gd.showDialog();
-        System.out.println("Dialog shown");
         if (!gd.wasCanceled()) {
             jobType = gd.getNextRadioButton();
         }

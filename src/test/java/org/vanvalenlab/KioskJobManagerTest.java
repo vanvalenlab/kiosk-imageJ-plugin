@@ -84,19 +84,6 @@ public class KioskJobManagerTest {
         robot.setAutoDelay(100);
         robot.setAutoWaitForIdle(true);
 
-        // test successful request
-        // server.enqueue(new MockResponse().setBody(responseStr));
-        // executor.submit(() -> {
-        //     System.out.println("First robot delay");
-        //     robot.delay(100);
-        //     System.out.println("About to push key");
-        //     robot.keyPress(InputEvent.BUTTON1_DOWN_MASK);
-        //     System.out.println("key has been pressed");
-        // });
-        // jobType = KioskJobManager.selectJobType(baseUrl.toString());
-        // System.out.println("jobType");
-        // assertEquals(expectedJobType, jobType);
-
         // test failed http request
         for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
             server.enqueue(new MockResponse().setResponseCode(500).setBody("{}"));
@@ -106,12 +93,30 @@ public class KioskJobManagerTest {
         );
 
         // test empty json body
-        for (int i = 0; i < Constants.MAX_HTTP_RETRIES; i++) {
-            server.enqueue(new MockResponse().setResponseCode(500).setBody("{}"));
-        }
+        server.enqueue(new MockResponse().setBody("{}"));
         assertThrows(IOException.class, () ->
             KioskJobManager.selectJobType(baseUrl.toString())
         );
+
+        // test successful request
+        // server.enqueue(new MockResponse().setBody(responseStr));
+        // executor.submit(() -> {
+        //     robot.delay(1000);
+        //     // press tab twice to move to OK
+        //     robot.keyPress(KeyEvent.VK_TAB);
+        //     robot.keyRelease(KeyEvent.VK_TAB);
+        //     robot.delay(50);
+        //     robot.keyPress(KeyEvent.VK_TAB);
+        //     robot.keyRelease(KeyEvent.VK_TAB);
+        //     robot.delay(50);
+        //     // OK button is selected, press enter.
+        //     robot.keyPress(KeyEvent.VK_ENTER);
+        //     robot.keyRelease(KeyEvent.VK_ENTER);
+        //     robot.delay(50);
+        // });
+        // jobType = KioskJobManager.selectJobType(baseUrl.toString());
+        // System.out.println(jobType);
+        // assertEquals(expectedJobType, jobType);
     }
 
     @Test
