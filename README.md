@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/vanvalenlab/kiosk-imageJ-plugin/badge.svg?branch=master)](https://coveralls.io/github/vanvalenlab/kiosk-imageJ-plugin?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](/LICENSE)
 
-The `kiosk-imageJ-plugin` is a [ImageJ 1.x](https://imagej.net/ImageJ1) plugin for easily processing images with an existing DeepCell Kiosk from within ImageJ. The plugin is also compatible with [ImageJ 2](https://imagej.net/ImageJ2) and [FIJI](https://imagej.net/Fiji/Downloads).
+The `kiosk-imageJ-plugin` is a [ImageJ 1.x](https://imagej.net/ImageJ1) plugin for easily processing images with an existing DeepCell Kiosk from within ImageJ. The plugin is also compatible with [ImageJ 2](https://imagej.net/ImageJ2), [FIJI](https://imagej.net/Fiji/Downloads), and [QuPath](https://qupath.github.io/).
 
 Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepcell) for an overview of the DeepCell ecosystem.
 
