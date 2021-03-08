@@ -27,10 +27,10 @@ public class LabelROIConverter implements PlugIn {
         // so used trimmed arrays where this is the case
         if (wand.xpoints.length > wand.npoints * 1.25)
             roi = new PolygonRoi(
-                    Arrays.copyOf(wand.xpoints, wand.npoints),
-                    Arrays.copyOf(wand.ypoints, wand.npoints),
-                    wand.npoints,
-                    Roi.TRACED_ROI
+                Arrays.copyOf(wand.xpoints, wand.npoints),
+                Arrays.copyOf(wand.ypoints, wand.npoints),
+                wand.npoints,
+                Roi.TRACED_ROI
             );
         else
             roi = new PolygonRoi(wand.xpoints, wand.ypoints, wand.npoints, Roi.TRACED_ROI);
