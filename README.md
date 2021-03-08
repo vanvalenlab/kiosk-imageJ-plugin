@@ -20,19 +20,19 @@ Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepc
 
 1. Open an image in ImageJ.
 
-![image](resources/step_1_screenshot.png) 
+![image](resources/step_1_screenshot.png)
 
 2. Navigate to Plugins > DeepCell Kiosk > Submit Active Image.  
 
-![image](resources/step_2_screenshot.png) 
+![image](resources/step_2_screenshot.png)
 
-3. If you're running one of our pretrained models, please make sure the settings all match the screenshot below. If you're running your own Kiosk, make sure to update the IP address for your custom instance. 
+3. If you're running one of our pretrained models, please make sure the settings all match the screenshot below. If you're running your own Kiosk, make sure to update the IP address for your custom instance.
 
-![image](resources/step_3_screenshot.png) 
+![image](resources/step_3_screenshot.png)
 
-4. Select which model you wish to run ("mesmer" is the default). Please see our [documentation](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#formatting-data-for-pre-trained-models) for data requirements for the different model types. 
+4. Select which model you wish to run ("mesmer" is the default). Please see our [documentation](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#formatting-data-for-pre-trained-models) for data requirements for the different model types.
 
-![image](resources/step_4_screenshot.png) 
+![image](resources/step_4_screenshot.png)
 
 5. Click OK to run the job.
 6. Await your results! They should be automatically downloaded and opened.
