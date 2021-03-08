@@ -54,7 +54,7 @@ public final class Constants {
     // Configurable options
     private static final Map<String, Object> DEFAULTS = new LinkedHashMap<String, Object>();
     static {
-        DEFAULTS.put(KIOSK_HOST, "http://deepcell.org");
+        DEFAULTS.put(KIOSK_HOST, "https://deepcell.org");
         DEFAULTS.put(UPDATE_STATUS_MILLISECONDS, 5000);
         DEFAULTS.put(EXPIRE_TIME_SECONDS, 3600);
     }
