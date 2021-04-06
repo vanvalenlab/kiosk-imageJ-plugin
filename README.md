@@ -47,3 +47,5 @@ Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepc
 4. Process the image normally.
 5. Only overlays and ROIs can be sent back to QuPath. Create an Overlay from the resulting label image (Plugins/DeepCell Kiosk/Create Label Overlay).
 6. Send the resulting overlay back to QuPath (Plugins/Send Overlay to QuPath).
+
+For more advanced usage with QuPath, please see [this groovy script](https://gist.github.com/petebankhead/db8548a0112bad089492061bf8046430) from Pete Bankhead.
