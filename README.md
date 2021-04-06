@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/vanvalenlab/kiosk-imageJ-plugin/badge.svg?branch=master)](https://coveralls.io/github/vanvalenlab/kiosk-imageJ-plugin?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](/LICENSE)
 
-The `kiosk-imageJ-plugin` is a ImageJ 1.x plugin for easily processing images with an existing DeepCell Kiosk from within ImageJ.
+The `kiosk-imageJ-plugin` is a [ImageJ 1.x](https://imagej.net/ImageJ1) plugin for easily processing images with an existing DeepCell Kiosk from within ImageJ. The plugin is also compatible with [ImageJ 2](https://imagej.net/ImageJ2), [FIJI](https://imagej.net/Fiji/Downloads), and [QuPath](https://qupath.github.io/).
 
 Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepcell) for an overview of the DeepCell ecosystem.
 
@@ -20,19 +20,19 @@ Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepc
 
 1. Open an image in ImageJ.
 
-![image](resources/step_1_screenshot.png) 
+![image](resources/step_1_screenshot.png)
 
 2. Navigate to Plugins > DeepCell Kiosk > Submit Active Image.  
 
-![image](resources/step_2_screenshot.png) 
+![image](resources/step_2_screenshot.png)
 
-3. If you're running one of our pretrained models, please make sure the settings all match the screenshot below. If you're running your own Kiosk, make sure to update the IP address for your custom instance. 
+3. If you're running one of our pretrained models, please make sure the settings all match the screenshot below. If you're running your own Kiosk, make sure to update the IP address for your custom instance.
 
-![image](resources/step_3_screenshot.png) 
+![image](resources/step_3_screenshot.png)
 
-4. Select which model you wish to run ("mesmer" is the default). Please see our [documentation](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#formatting-data-for-pre-trained-models) for data requirements for the different model types. 
+4. Select which model you wish to run ("mesmer" is the default). Please see our [documentation](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#formatting-data-for-pre-trained-models) for data requirements for the different model types.
 
-![image](resources/step_4_screenshot.png) 
+![image](resources/step_4_screenshot.png)
 
 5. Click OK to run the job.
 6. Await your results! They should be automatically downloaded and opened.
@@ -47,3 +47,5 @@ Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepc
 4. Process the image normally.
 5. Only overlays and ROIs can be sent back to QuPath. Create an Overlay from the resulting label image (Plugins/DeepCell Kiosk/Create Label Overlay).
 6. Send the resulting overlay back to QuPath (Plugins/Send Overlay to QuPath).
+
+For more advanced usage with QuPath, please see [this groovy script](https://gist.github.com/petebankhead/db8548a0112bad089492061bf8046430) from Pete Bankhead.
