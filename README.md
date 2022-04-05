@@ -8,7 +8,7 @@ The `kiosk-imageJ-plugin` is a [ImageJ 1.x](https://imagej.net/ImageJ1) plugin f
 
 Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepcell) for an overview of the DeepCell ecosystem.
 
-**NOTE:** Due to some limitations with how images are passed between the different platforms, we didn't find an easy way to allow both segmentation predictions to be generated, so we defaulted to showing the whole-cell predictions. If you'd like to generate both sets of predictions for your images, you'll need to either use the website or a local installation.
+**NOTE:** Due to limitations with how images are passed between the different platforms, we cannot generate both types of segmentation predictions, so we defaulted to showing the whole-cell predictions. Either the [website](https://deepcell.org/predict) or a local installation can be used to generate both sets of predictions for an image.
 
 ## How to install
 
