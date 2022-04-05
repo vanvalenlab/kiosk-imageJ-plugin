@@ -8,6 +8,8 @@ The `kiosk-imageJ-plugin` is a [ImageJ 1.x](https://imagej.net/ImageJ1) plugin f
 
 Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepcell) for an overview of the DeepCell ecosystem.
 
+**NOTE:** Due to limitations with how images are passed between the different platforms, we cannot generate both types of segmentation predictions, so we defaulted to showing the whole-cell predictions. Either the [website](https://deepcell.org/predict) or a local installation can be used to generate both sets of predictions for an image.
+
 ## How to install
 
 1. Download the [latest JAR file](https://github.com/vanvalenlab/kiosk-imageJ-plugin/releases/download/0.3.2/Kiosk_ImageJ-0.3.2.jar).
@@ -35,7 +37,13 @@ Please see our [introductory repo](https://github.com/vanvalenlab/intro-to-deepc
 ![image](resources/step_4_screenshot.png)
 
 5. Click OK to run the job.
-6. Await your results! They should be automatically downloaded and opened.
+6. Await your results! They should be automatically downloaded and opened. 
+
+## How to draw outlines and add them to the ROI Manager with the segmented image in ImageJ
+
+1. Select the newly-generated segmented image.
+2. Navigate to Plugins > DeepCell Kiosk > Create Label Overlay
+3. Navigate to Image > Overlay > To ROI Manager. The results should populate in your ROI Manager and you can proceed with any downstream analysis.
 
 ## QuPath Integration
 
