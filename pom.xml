@@ -42,7 +42,7 @@
     <imagej.version>1.53a</imagej.version>
     <junit.version>4.13.1</junit.version>
     <junit.jupiter.version>5.6.2</junit.jupiter.version>
-    <tika.version>1.24.1</tika.version>
+    <tika.version>1.28.3</tika.version>
     <commons.io.version>2.7</commons.io.version>
   </properties>
 
